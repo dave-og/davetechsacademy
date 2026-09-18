@@ -1,0 +1,262 @@
+/* ================================================================
+   PAYSTACK CHECKOUT MODAL STYLES
+   ================================================================ */
+
+.paystack-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-4);
+  z-index: var(--z-modal);
+  animation: fadeIn var(--transition-base) ease;
+}
+
+.paystack-checkout {
+  background: #ffffff;
+  color: #011b33;
+  width: 100%;
+  max-width: 440px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  animation: slideUp var(--transition-base) ease;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Paystack Header */
+.paystack-checkout__header {
+  background: #f4f8fb;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e1e9f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.paystack-checkout__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.paystack-checkout__logo-badge {
+  width: 36px;
+  height: 36px;
+  background: #011b33;
+  color: #d4af37;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.paystack-checkout__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #011b33;
+  margin: 0;
+}
+
+.paystack-checkout__email {
+  font-size: 12px;
+  color: #6c7c8c;
+  margin: 0;
+}
+
+.paystack-checkout__close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #8c9ba5;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.paystack-checkout__close:hover {
+  background: #e2eaf0;
+  color: #011b33;
+}
+
+/* Amount Bar */
+.paystack-checkout__amount-bar {
+  background: #011b33;
+  color: #ffffff;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.paystack-checkout__amount-label {
+  font-size: 12px;
+  color: #a0aec0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.paystack-checkout__amount-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: #d4af37;
+}
+
+/* Payment Channels Tabs */
+.paystack-channels {
+  display: flex;
+  background: #f8fafc;
+  border-bottom: 1px solid #e1e9f0;
+  padding: 0 16px;
+  overflow-x: auto;
+}
+
+.paystack-channel-tab {
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.paystack-channel-tab--active {
+  color: #0ba4db;
+  border-bottom-color: #0ba4db;
+  background: #ffffff;
+}
+
+/* Checkout Form Body */
+.paystack-checkout__body {
+  padding: 24px;
+}
+
+.paystack-input-group {
+  margin-bottom: 16px;
+}
+
+.paystack-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+.paystack-input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 14px;
+  color: #0f172a;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.paystack-input:focus {
+  outline: none;
+  border-color: #0ba4db;
+  box-shadow: 0 0 0 3px rgba(11, 164, 219, 0.15);
+}
+
+.paystack-input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Paystack Pay Button */
+.paystack-pay-btn {
+  width: 100%;
+  padding: 14px;
+  background: #3bb75e;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(59, 183, 94, 0.3);
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+
+.paystack-pay-btn:hover {
+  background: #34a853;
+  transform: translateY(-1px);
+}
+
+.paystack-pay-btn:active {
+  transform: scale(0.98);
+}
+
+.paystack-pay-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Security Footer */
+.paystack-checkout__footer {
+  padding: 12px 24px 16px;
+  text-align: center;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.paystack-badge {
+  font-weight: 800;
+  color: #0ba4db;
+  letter-spacing: 0.5px;
+}
+
+/* Test/Simulate Tools Bar */
+.paystack-sim-bar {
+  background: #fffbeb;
+  border: 1px dashed #fcd34d;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #92400e;
+}
+
+.paystack-sim-fail-btn {
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}

@@ -1,0 +1,531 @@
+/* ================================================================
+   APPLY PAGE — Multi-Step Course Application Wizard Styles
+   ================================================================ */
+
+.apply-page {
+  min-height: calc(100vh - var(--header-height));
+  padding: var(--sp-12) 0 var(--sp-20);
+  background: radial-gradient(circle at 50% 10%, rgba(212, 175, 55, 0.04) 0%, transparent 50%);
+}
+
+.apply-header {
+  text-align: center;
+  margin-bottom: var(--sp-8);
+}
+
+.apply-header__badge {
+  display: inline-block;
+  padding: var(--sp-1) var(--sp-3);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--gold);
+  background: var(--gold-muted);
+  border-radius: var(--radius-full);
+  margin-bottom: var(--sp-3);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.apply-header__title {
+  font-size: var(--fs-3xl);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--sp-2);
+}
+
+.apply-header__subtitle {
+  font-size: var(--fs-base);
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ─── Stepper Progress Bar ──────────────────────────────── */
+.apply-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 800px;
+  margin: 0 auto var(--sp-10);
+  position: relative;
+  padding: 0 var(--sp-4);
+}
+
+.apply-stepper__line {
+  position: absolute;
+  top: 18px;
+  left: 40px;
+  right: 40px;
+  height: 3px;
+  background: var(--border-primary);
+  z-index: 0;
+}
+
+.apply-stepper__line-progress {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold) 0%, var(--gold-bright) 100%);
+  transition: width var(--transition-base);
+}
+
+.apply-step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  position: relative;
+  z-index: 1;
+  background: var(--bg-primary);
+  padding: 0 var(--sp-2);
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+.apply-step-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  border: 2px solid var(--border-primary);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+}
+
+.apply-step-item--active .apply-step-circle {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--black);
+  box-shadow: var(--shadow-gold);
+}
+
+.apply-step-item--completed .apply-step-circle {
+  background: var(--gold-muted);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.apply-step-label {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  font-weight: var(--fw-medium);
+  transition: color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.apply-step-item--active .apply-step-label {
+  color: var(--gold);
+  font-weight: var(--fw-bold);
+}
+
+.apply-step-item--completed .apply-step-label {
+  color: var(--text-primary);
+}
+
+/* ─── Wizard Card Box ───────────────────────────────────── */
+.apply-card {
+  max-width: 840px;
+  margin: 0 auto;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-2xl);
+  padding: var(--sp-8) var(--sp-10);
+  box-shadow: var(--shadow-xl);
+}
+
+.apply-card__step-header {
+  margin-bottom: var(--sp-6);
+  padding-bottom: var(--sp-4);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.apply-card__step-title {
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--sp-1);
+}
+
+.apply-card__step-desc {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+/* Step 1: Course Selection */
+.course-selection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-6);
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: var(--sp-2);
+}
+
+.course-select-card {
+  border: 1.5px solid var(--border-primary);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-4);
+  background: var(--bg-secondary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.course-select-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.course-select-card--selected {
+  border-color: var(--gold);
+  background: rgba(212, 175, 55, 0.08);
+  box-shadow: var(--shadow-gold);
+}
+
+.course-select-card__img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+
+.course-select-card__title {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+}
+
+.course-select-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.course-select-card__price {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-extrabold);
+  color: var(--gold);
+}
+
+/* Step 2: Auth Verification */
+.auth-verify-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-6);
+  margin-bottom: var(--sp-6);
+}
+
+.auth-verify-user {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+}
+
+.auth-verify-user__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  background: var(--gold);
+  color: var(--black);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-verify-user__info h4 {
+  font-size: var(--fs-base);
+  color: var(--text-primary);
+}
+
+.auth-verify-user__info p {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.auth-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-primary);
+  margin-bottom: var(--sp-6);
+}
+
+.auth-tab-btn {
+  flex: 1;
+  padding: var(--sp-3);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.auth-tab-btn--active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+/* Step 4: Learning Modes */
+.learning-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-6);
+  margin-bottom: var(--sp-6);
+}
+
+.learning-mode-card {
+  border: 2px solid var(--border-primary);
+  border-radius: var(--radius-2xl);
+  padding: var(--sp-6);
+  background: var(--bg-secondary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.learning-mode-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.learning-mode-card--selected {
+  border-color: var(--gold);
+  background: rgba(212, 175, 55, 0.08);
+  box-shadow: var(--shadow-gold);
+}
+
+.learning-mode-card__icon {
+  font-size: 36px;
+  margin-bottom: var(--sp-3);
+}
+
+.learning-mode-card__title {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--sp-2);
+}
+
+.learning-mode-card__desc {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--sp-4);
+  line-height: 1.5;
+}
+
+.learning-mode-card__perks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.learning-mode-card__perks li {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+/* Step 5: Branch & Cohorts */
+.branch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-6);
+}
+
+.branch-card {
+  border: 1.5px solid var(--border-primary);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-5);
+  background: var(--bg-secondary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-align: left;
+}
+
+.branch-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.branch-card--selected {
+  border-color: var(--gold);
+  background: rgba(212, 175, 55, 0.08);
+  box-shadow: var(--shadow-gold);
+}
+
+.branch-card__title {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--sp-1);
+}
+
+.branch-card__location {
+  font-size: var(--fs-xs);
+  color: var(--gold);
+  font-weight: var(--fw-medium);
+  margin-bottom: var(--sp-2);
+}
+
+.branch-card__address {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  margin-bottom: var(--sp-2);
+  line-height: 1.4;
+}
+
+.branch-card__hours {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Step 6: Review Summary */
+.review-summary-box {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-6);
+  margin-bottom: var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.review-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: var(--fs-sm);
+}
+
+.review-row__label {
+  color: var(--text-muted);
+  font-weight: var(--fw-medium);
+}
+
+.review-row__val {
+  color: var(--text-primary);
+  font-weight: var(--fw-semibold);
+  text-align: right;
+  max-width: 60%;
+}
+
+.review-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--sp-2);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+}
+
+.review-total-row .text-gold {
+  font-size: var(--fs-2xl);
+}
+
+/* Navigation Buttons Row */
+.apply-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  margin-top: var(--sp-8);
+  padding-top: var(--sp-6);
+  border-top: 1px solid var(--border-primary);
+}
+
+/* Success Confirmation Card */
+.confirmation-card {
+  text-align: center;
+  padding: var(--sp-8) 0;
+}
+
+.confirmation-card__icon {
+  font-size: 56px;
+  margin-bottom: var(--sp-4);
+}
+
+.confirmation-card__badge {
+  display: inline-block;
+  padding: var(--sp-2) var(--sp-4);
+  background: var(--gold-muted);
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-full);
+  color: var(--gold);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-base);
+  margin-bottom: var(--sp-6);
+}
+
+.confirmation-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-4);
+  max-width: 580px;
+  margin: 0 auto var(--sp-8);
+  text-align: left;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-6);
+}
+
+.confirmation-detail-item label {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  display: block;
+}
+
+.confirmation-detail-item span {
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
+  font-weight: var(--fw-semibold);
+}
+
+@media (max-width: 767px) {
+  .apply-card {
+    padding: var(--sp-6) var(--sp-4);
+  }
+
+  .learning-mode-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .confirmation-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .apply-stepper {
+    overflow-x: auto;
+    padding-bottom: var(--sp-3);
+  }
+
+  .apply-step-label {
+    display: none;
+  }
+}

@@ -1,0 +1,286 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background: radial-gradient(
+        circle at 15% 15%,
+        rgba(37, 99, 235, 0.18) 0%,
+        rgba(37, 99, 235, 0.06) 25%,
+        transparent 45%),
+
+        radial-gradient(
+        circle at 85% 30%,
+        rgba(37, 99, 235, 0.18) 0%,
+        rgba(37, 99, 235, 0.06) 25%,
+        transparent 45%),
+
+        radial-gradient(
+        circle at 50% 100%,
+        rgba(37, 99, 235, 0.18) 0%,
+        rgba(37, 99, 235, 0.06) 25%,
+        transparent 45%),
+         linear-gradient(
+             135deg, 
+            #070D20 0%,
+            #0B1530 35%,
+            #101F43 70%,
+             #132B56 100% 
+         );
+    background-attachment: fixed; 
+    background-repeat: no-repeat; 
+    background-size: contain;   
+}
+span{
+    color: gold;
+}
+.main-heading{
+    background-color: transparent;
+    align-items: center;
+}
+.heading{
+    display: flex;
+    gap: 12rem;
+    padding: 15px;
+    margin-left: 3rem;
+    align-items: center;
+}
+.nav-links{
+    display: flex;
+    gap: 3rem;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.nav-links ul{
+    list-style: none;
+}
+.nav-links ul a{
+    text-decoration: none;
+    color: rgb(255, 217, 0);
+    transition: 2s;
+    text-shadow: 2px 3px 5px black;
+    display: inline-block;
+}
+.nav-links a:hover{
+    transition: 0.5s;
+    transform: translateY(-5px);
+    text-decoration:underline ;
+}
+#white{
+    color: #fff;
+}#blue{
+    color: blue;
+}
+#lengthy{
+    width: 50%;
+}
+.login{
+    padding: 10px 20px;
+    background-color: transparent;
+    color: white;
+    border-radius: 2rem;
+    border: black 1px solid;
+    box-shadow: 2px 3px 5px black;
+    /* transition: 0.3s; */
+}
+.login:hover{
+    transition: 1s ease-in-out;
+    box-shadow: 2px 3px 4px blue;
+    color: black;
+    transform: scale(1.1);
+}
+.btn-2{ 
+    padding: 10px 20px;
+    background-color: blue;
+    color: white;
+    border-radius: 2rem;
+    border: black 1px solid;
+    box-shadow: 2px 3px 5px black;
+    /* transition: 0.3s; */
+}
+.btn-2:hover{
+    transition: 1s ease-in-out;
+    box-shadow: 2px 3px 4px blue;
+    color: black;
+    transform: scale(1.1);
+}    
+.float{
+    display: flex;
+    background:rgb(255, 225, 225, 0.06);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 225, 225, 0.10);
+    -webkit-backdrop-filter: blur(16px);
+    min-height: 470px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.20);
+    padding: 1rem 5rem;
+    align-items: center;
+}
+.float img{
+    width: 25rem;
+    height: 20rem;
+}
+.start{
+    background-color: blue;
+    padding: 10px;
+    border-radius: 2rem;
+    border: black solid 1px;
+    box-shadow: 2px 3px 5px black;
+    margin-right: 1rem;
+}
+.start:hover{
+    transition: 1s ease-in-out;
+    box-shadow: 2px 3px 4px blue;
+    color: black;
+    transform: scale(1.1);
+}    
+.explore{
+    background-color: transparent;
+    padding: 10px;
+    border-radius: 2rem;
+    border: black solid 1px;
+    box-shadow: 2px 3px 5px black;
+}
+.explore:hover{
+    transition: 1s ease-in-out;
+    box-shadow: 2px 3px 4px blue;
+    color: black;
+    transform: scale(1.1);
+} 
+.courses{
+    align-items: center;
+    color: white;
+}
+.courses h3{
+    text-align: center;
+    padding-top: 10px;
+}
+.courses p{
+    text-align: center;
+    padding: 10px;
+}
+.courses img{
+    width: 15rem;
+    height: 15rem;
+}  
+.courses button{
+    text-align: center;
+    padding: 10px;
+    margin-top: 2rem;
+    background-color: blue;
+    border: transparent;
+    border-radius: 2rem;
+    box-shadow: 2px 3px 5px black;
+} 
+.courses-1{
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+}
+.courses-2{
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+    margin: 2rem;
+}
+.courses-3{
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+}
+.course-card:hover{
+    box-shadow: 2px 3px 5px black;
+    transition: 1s ease-in-out;
+    transform: scale(1.0);
+    transform: translateY(-4px);
+}
+.courses .end-btn{
+    align-items: center;
+    display: block;
+    margin: 3rem auto 2px ;
+    margin-bottom: 1.5rem;
+    transition: 2s;
+    transform: translateY(-4px);
+}
+.course-card{
+    margin-top: 1rem;
+    padding: 15px;
+    align-items: center;
+    text-align: center;
+    border: 1px solid gold;
+    border-radius: 2rem;
+    transition: 0.3s;
+    box-shadow: 1px 1px 7px gold;
+}
+/* .product-design, .frontend, .backend, .full-stack, .graphics, .app-dev, .data-analysis, .video-editting, .cloud-opting, .cybersecurity, button{
+    display: block;
+    margin: 15px auto 0;
+} */
+.course-card .timing{
+    margin: 2px 0;
+}
+.course-card .rating{
+    margin: 2px 0;
+}
+.course-card .pricing{
+    margin: 2px 0;
+}
+.why-journey{
+    background-color: blue;
+}
+.why-journey h2{
+    text-align: center;
+    padding-top: 1rem;
+}
+.choose{
+    display: flex;
+}
+.why i{
+    color: red;
+    background-color: blueviolet;
+    padding: 15px;
+    width: 70px;
+    height: 70px;
+    border: 1px solid black;
+    border-radius: 50%;
+    font-size: 40px;
+}
+.why{
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem;
+}
+.why p{
+    width: 100%;
+    margin-top: 1rem;
+}
+.journey{
+    display: flex;
+    gap: 0.5rem;
+}
+.learning i{
+    color: red;
+    background-color: blueviolet;
+    padding: 15px;
+    width: 70px;
+    height: 70px;
+    border: 1px solid black;
+    border-radius: 50%;
+    font-size: 40px;
+}
+.learning{
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem;
+}
+.width{
+    width: 100%;
+}
+.learning-text h6{
+    padding: 1rem 0;
+}

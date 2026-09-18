@@ -1,0 +1,276 @@
+/* ── CRM Manager Styles ── */
+.crm-manager {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+
+.crm-tabs {
+  display: flex;
+  gap: var(--sp-2);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--sp-2);
+  overflow-x: auto;
+}
+
+.crm-tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.crm-tab-btn:hover {
+  color: var(--color-text);
+  background-color: var(--color-surface-hover);
+}
+
+.crm-tab-btn--active {
+  color: var(--color-gold);
+  background-color: rgba(212, 175, 55, 0.12);
+  border-bottom: 2px solid var(--color-gold);
+}
+
+/* Segments Grid */
+.crm-segments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--sp-5);
+}
+
+.crm-segment-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  transition: all var(--transition-fast);
+}
+
+.crm-segment-card:hover {
+  border-color: var(--color-gold);
+  transform: translateY(-2px);
+}
+
+.crm-segment-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.crm-segment-card__name {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.crm-segment-card__desc {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  line-height: 1.4;
+  flex: 1;
+}
+
+.crm-segment-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px dashed var(--color-border);
+  padding-top: var(--sp-3);
+  margin-top: auto;
+  gap: var(--sp-2);
+}
+
+.crm-segment-count {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  color: var(--color-gold);
+}
+
+/* Campaign Dispatcher */
+.campaign-compose-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: var(--sp-6);
+}
+
+@media (max-width: 960px) {
+  .campaign-compose-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.crm-variable-chips {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  margin-top: var(--sp-2);
+}
+
+.crm-token-btn {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-gold);
+  font-family: monospace;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.crm-token-btn:hover {
+  background-color: rgba(212, 175, 55, 0.15);
+  border-color: var(--color-gold);
+}
+
+/* Previews */
+.crm-preview-email-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-5);
+  min-height: 280px;
+}
+
+.crm-preview-email-header {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--sp-3);
+  margin-bottom: var(--sp-4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.crm-preview-email-brand {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.crm-preview-email-brand span {
+  color: var(--color-gold);
+}
+
+.crm-preview-whatsapp-phone {
+  background-color: #0c1317;
+  border: 1px solid #233138;
+  border-radius: var(--radius-xl);
+  padding: var(--sp-4);
+  min-height: 260px;
+}
+
+.crm-preview-whatsapp-bar {
+  padding-bottom: var(--sp-3);
+  border-bottom: 1px solid #233138;
+  margin-bottom: var(--sp-4);
+  font-size: 13px;
+  font-weight: 700;
+  color: #00a884;
+}
+
+.crm-preview-whatsapp-bubble {
+  background-color: #005c4b;
+  color: #e9edef;
+  border-radius: 8px 8px 2px 8px;
+  padding: var(--sp-4);
+  max-width: 90%;
+  margin-left: auto;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.crm-preview-sms-phone {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-4);
+  min-height: 260px;
+}
+
+.crm-preview-sms-header {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--sp-2);
+  margin-bottom: var(--sp-4);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.crm-preview-sms-bubble {
+  background-color: #2563eb;
+  color: #ffffff;
+  border-radius: 14px 14px 2px 14px;
+  padding: var(--sp-3) var(--sp-4);
+  max-width: 85%;
+  margin-left: auto;
+}
+
+/* Device toggle */
+.crm-device-toggle {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.crm-device-toggle:hover {
+  color: var(--color-text);
+}
+
+.crm-device-toggle--active {
+  background-color: var(--color-gold);
+  color: #000000;
+  border-color: var(--color-gold);
+  font-weight: 700;
+}
+
+/* Email Preview Frame */
+.email-preview-container {
+  background-color: #000000;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-4);
+  overflow: auto;
+  max-height: 560px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Provider Integrations Cards */
+.crm-providers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--sp-6);
+}
+
+.crm-provider-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.crm-provider-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--sp-3);
+}

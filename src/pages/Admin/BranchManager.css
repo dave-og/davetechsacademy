@@ -1,0 +1,102 @@
+/* ── Branch Manager Styles ── */
+.branch-manager {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+
+.admin-branches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: var(--sp-6);
+}
+
+.admin-branch-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all var(--transition-fast);
+}
+
+.admin-branch-card:hover {
+  border-color: var(--color-gold);
+  transform: translateY(-2px);
+}
+
+.admin-branch-card--inactive {
+  opacity: 0.6;
+  filter: grayscale(0.6);
+}
+
+.admin-branch-card__img-wrap {
+  height: 160px;
+  position: relative;
+  overflow: hidden;
+  background-color: #0a0a0a;
+}
+
+.admin-branch-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-branch-card__body {
+  padding: var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  flex: 1;
+}
+
+.admin-branch-card__title {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.admin-branch-card__location {
+  font-size: var(--text-xs);
+  color: var(--color-gold);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.admin-branch-card__address {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+.admin-branch-card__stats {
+  display: flex;
+  gap: var(--sp-3);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  padding: var(--sp-2) 0;
+  border-top: 1px dashed var(--color-border);
+  border-bottom: 1px dashed var(--color-border);
+}
+
+.admin-branch-card__actions {
+  display: flex;
+  gap: var(--sp-2);
+  margin-top: auto;
+  padding-top: var(--sp-3);
+}
+
+.course-checkbox-list {
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  background-color: var(--color-bg);
+}

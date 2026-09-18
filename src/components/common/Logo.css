@@ -1,0 +1,16 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.logo__text {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-extrabold);
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.logo__accent {
+  color: var(--gold);
+}

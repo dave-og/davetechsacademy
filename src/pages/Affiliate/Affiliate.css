@@ -1,0 +1,121 @@
+/* ─── Affiliate & Partner Styles ───────────────────────────────── */
+
+.affiliate-hero {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto var(--sp-10) auto;
+}
+
+.affiliate-benefit-card {
+  padding: var(--sp-8);
+  text-align: center;
+}
+
+.affiliate-icon {
+  font-size: var(--fs-4xl);
+  margin-bottom: var(--sp-4);
+}
+
+.affiliate-benefit-card h3 {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--sp-2);
+}
+
+.affiliate-benefit-card p {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Calculator */
+.affiliate-calc-card {
+  padding: var(--sp-8);
+  background: radial-gradient(circle at top, #1c1c1c 0%, #111111 100%);
+  border-color: var(--border-gold);
+}
+
+.affiliate-calc-header {
+  text-align: center;
+  margin-bottom: var(--sp-8);
+}
+
+.affiliate-calc-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-8);
+  align-items: center;
+}
+
+.affiliate-slider-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.affiliate-slider {
+  width: 100%;
+  accent-color: var(--color-gold-bright);
+  height: 8px;
+  cursor: pointer;
+}
+
+.affiliate-calc-result {
+  background: var(--bg-input);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-6);
+  text-align: center;
+}
+
+.affiliate-result-label {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.affiliate-result-val {
+  font-size: var(--fs-4xl);
+  font-weight: 900;
+  color: var(--color-gold-bright);
+  margin: var(--sp-2) 0;
+}
+
+/* Form Card */
+.affiliate-form-card {
+  padding: var(--sp-8);
+}
+
+.affiliate-code-box {
+  background: var(--bg-input);
+  border: 1px dashed var(--border-gold);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-6);
+  text-align: center;
+  margin-top: var(--sp-4);
+}
+
+.affiliate-code-label {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.affiliate-link-display {
+  font-family: monospace;
+  font-size: var(--fs-base);
+  color: var(--color-gold-bright);
+  padding: var(--sp-3);
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  margin: var(--sp-3) 0 var(--sp-4) 0;
+  word-break: break-all;
+}
+
+@media (max-width: 768px) {
+  .affiliate-calc-body {
+    grid-template-columns: 1fr;
+  }
+}

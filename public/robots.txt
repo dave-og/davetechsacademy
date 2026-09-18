@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard/
+Disallow: /payment/
+
+Sitemap: https://devtechs.academy/sitemap.xml

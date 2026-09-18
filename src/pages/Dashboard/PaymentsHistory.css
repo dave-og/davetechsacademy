@@ -1,0 +1,206 @@
+.payments-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+
+.payments-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+}
+
+/* Summary Grid */
+.payments-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--sp-4);
+}
+
+.pay-stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pay-stat-card--highlight {
+  border-color: var(--border-gold-subtle);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, var(--bg-card) 100%);
+}
+
+.pay-stat-card__lbl {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+}
+
+.pay-stat-card__val {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.pay-stat-card--highlight .pay-stat-card__val {
+  color: var(--gold-primary);
+}
+
+.pay-stat-card__sub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Table Card */
+.payments-table-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.payments-table-header {
+  padding: var(--sp-5) var(--sp-6);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+}
+
+.payments-table-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.payments-search-input {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  width: 260px;
+  transition: border-color var(--transition-fast);
+}
+
+.payments-search-input:focus {
+  outline: none;
+  border-color: var(--gold-primary);
+}
+
+.payments-table-scroll {
+  overflow-x: auto;
+}
+
+.payments-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.payments-table th {
+  text-align: left;
+  padding: var(--sp-4) var(--sp-6);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-surface);
+}
+
+.payments-table td {
+  padding: var(--sp-4) var(--sp-6);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.pay-ref-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.pay-ref-code {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  color: var(--gold-primary);
+  font-weight: 700;
+}
+
+.pay-ref-copy-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.pay-ref-copy-btn:hover {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border-color: var(--gold-primary);
+}
+
+.pay-course-name {
+  font-weight: 700;
+}
+
+.pay-amount-val {
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.pay-channel-badge {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.pay-date-val {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* Empty */
+.payments-empty {
+  padding: var(--sp-12) var(--sp-6);
+  text-align: center;
+}
+
+.payments-empty-icon {
+  font-size: 44px;
+  margin-bottom: var(--sp-3);
+}
+
+.payments-empty-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: var(--sp-2);
+}
+
+.payments-empty-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 440px;
+  margin: 0 auto var(--sp-6);
+  line-height: 1.5;
+}
