@@ -585,7 +585,7 @@ export const Apply: React.FC = () => {
                             id="loginMail"
                             type="email"
                             className="form-input"
-                            placeholder="e.g. student@devtechs.ng"
+                            placeholder="e.g. student@davetechs.ng"
                             value={authEmail}
                             onChange={(e) => setAuthEmail(e.target.value)}
                             required

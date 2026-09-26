@@ -137,7 +137,7 @@ export const DashboardLayout: React.FC = () => {
               {user?.fullName || "Student"}
             </h4>
             <p className="dash-user-email" title={user?.email}>
-              {user?.email || "student@devtechs.ng"}
+              {user?.email || "student@davetechs.ng"}
             </p>
           </div>
         </div>

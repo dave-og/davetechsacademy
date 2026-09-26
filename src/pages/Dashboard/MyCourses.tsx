@@ -89,7 +89,7 @@ export const MyCourses: React.FC = () => {
     });
 
     // If no paid apps yet, provide an initial preview if user is demo or showcase
-    if (items.length === 0 && user.email === "student@devtechs.ng") {
+    if (items.length === 0 && (user.email === "student@davetechs.ng" || user.email === "student@devtechs.ng")) {
       const demoCourse1 = courses[1]; // Frontend
       const demoCourse2 = courses[0]; // UI/UX
       items = [

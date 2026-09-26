@@ -57,6 +57,17 @@ const DEFAULT_USERS: StoredUser[] = [
   {
     id: "stu-demo-01",
     fullName: "Adebayo David",
+    email: "student@davetechs.ng",
+    phone: "+234 801 234 5678",
+    country: "Nigeria",
+    state: "Ogun State",
+    role: "student",
+    createdAt: "2026-01-15T09:00:00.000Z",
+    passwordHash: STUDENT_DEMO_HASH,
+  },
+  {
+    id: "stu-demo-02",
+    fullName: "Adebayo David",
     email: "student@devtechs.ng",
     phone: "+234 801 234 5678",
     country: "Nigeria",
@@ -67,6 +78,17 @@ const DEFAULT_USERS: StoredUser[] = [
   },
   {
     id: "admin-master-01",
+    fullName: "Dave Techs Academy Admin",
+    email: "admin@davetechs.ng",
+    phone: "+234 802 345 6789",
+    country: "Nigeria",
+    state: "Lagos State",
+    role: "admin",
+    createdAt: "2026-01-01T08:00:00.000Z",
+    passwordHash: ADMIN_DEMO_HASH,
+  },
+  {
+    id: "admin-master-02",
     fullName: "Dave Techs Academy Admin",
     email: "admin@devtechs.ng",
     phone: "+234 802 345 6789",
@@ -237,8 +259,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Hardcoded fallback support for demo accounts
       let isPasswordCorrect = false;
       if (
-        (match.email === "student@devtechs.ng" && credentials.password === "Password123!") ||
-        (match.email === "admin@devtechs.ng" && credentials.password === "AdminDevTechs2026!")
+        ((match.email === "student@devtechs.ng" || match.email === "student@davetechs.ng") && credentials.password === "Password123!") ||
+        ((match.email === "admin@devtechs.ng" || match.email === "admin@davetechs.ng") && credentials.password === "AdminDevTechs2026!")
       ) {
         isPasswordCorrect = true;
       } else {

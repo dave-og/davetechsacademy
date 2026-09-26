@@ -11,6 +11,9 @@ import { Contact } from "../pages/Contact/Contact";
 import { Courses } from "../pages/Courses/Courses";
 import { CourseDetail } from "../pages/CourseDetail/CourseDetail";
 import { Notifications } from "../pages/Dashboard/Notifications";
+import { About } from "../pages/About/About";
+import { Testimonials } from "../pages/Testimonials/Testimonials";
+import { NotFound } from "../pages/NotFound/NotFound";
 
 const renderWithProviders = (ui: React.ReactElement, { initialEntries = ["/"] } = {}) => {
   return render(
@@ -46,7 +49,7 @@ describe("Interactive UI Component & Flow Testing", () => {
       fireEvent.click(fillStudentBtn);
 
       const emailInput = screen.getByLabelText(/Email Address/i) as HTMLInputElement;
-      expect(emailInput.value).toBe("student@devtechs.ng");
+      expect(emailInput.value).toBe("student@davetechs.ng");
     });
   });
 
@@ -129,6 +132,36 @@ describe("Interactive UI Component & Flow Testing", () => {
       expect(screen.getByText(/Notifications & Announcements/i)).toBeInTheDocument();
       expect(screen.getByRole("button", { name: /^All/i })).toBeInTheDocument();
       expect(screen.getByRole("button", { name: /^Unread \(/i })).toBeInTheDocument();
+    });
+  });
+
+  describe("About Page Interaction", () => {
+    it("renders about page with mission, vision, values, and CTAs", () => {
+      renderWithProviders(<About />, { initialEntries: ["/about"] });
+
+      expect(screen.getByRole("heading", { name: /About Dave Techs Academy/i })).toBeInTheDocument();
+      expect(screen.getByText(/Empower practical builders/i)).toBeInTheDocument();
+      expect(screen.getByText(/Africa's tech innovation engine/i)).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /Explore Courses →/i })).toBeInTheDocument();
+    });
+  });
+
+  describe("Testimonials Page Interaction", () => {
+    it("renders testimonials page with student success stories", () => {
+      renderWithProviders(<Testimonials />, { initialEntries: ["/testimonials"] });
+
+      expect(screen.getByRole("heading", { name: /Student Success Stories/i })).toBeInTheDocument();
+      expect(screen.getByText(/Chioma Okonkwo/i)).toBeInTheDocument();
+    });
+  });
+
+  describe("NotFound 404 Page Interaction", () => {
+    it("renders 404 error page with navigation back buttons", () => {
+      renderWithProviders(<NotFound />, { initialEntries: ["/non-existent-route-xyz"] });
+
+      expect(screen.getByText("404")).toBeInTheDocument();
+      expect(screen.getByRole("heading", { name: /Page Not Found/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /← Return Home/i })).toBeInTheDocument();
     });
   });
 });

@@ -60,14 +60,14 @@ export const Login: React.FC = () => {
   };
 
   const handleFillDemo = () => {
-    setEmail("student@devtechs.ng");
+    setEmail("student@davetechs.ng");
     setPassword("Password123!");
     setErrors({});
     setServerError(null);
   };
 
   const handleFillAdminDemo = () => {
-    setEmail("admin@devtechs.ng");
+    setEmail("admin@davetechs.ng");
     setPassword("AdminDevTechs2026!");
     setErrors({});
     setServerError(null);
@@ -104,7 +104,7 @@ export const Login: React.FC = () => {
                 id="email"
                 type="email"
                 className={`form-input ${errors.email ? "form-input--error" : ""}`}
-                placeholder="e.g. student@devtechs.ng"
+                placeholder="e.g. student@davetechs.ng"
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
@@ -178,13 +178,13 @@ export const Login: React.FC = () => {
           {/* Quick Demo Credentials Box */}
           <div className="demo-credentials-box" style={{ display: "flex", flexDirection: "column", gap: "var(--sp-2)", alignItems: "stretch" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span>Student: <strong>student@devtechs.ng</strong></span>
+              <span>Student: <strong>student@davetechs.ng</strong></span>
               <button type="button" onClick={handleFillDemo}>
                 Fill Student
               </button>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px dashed var(--color-border)", paddingTop: "var(--sp-2)" }}>
-              <span>Admin: <strong>admin@devtechs.ng</strong></span>
+              <span>Admin: <strong>admin@davetechs.ng</strong></span>
               <button type="button" onClick={handleFillAdminDemo}>
                 Fill Admin
               </button>
