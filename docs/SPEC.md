@@ -1,12 +1,12 @@
-# Dev Techs Academy --- Product Requirements Document (PRD)
+# Dave Techs Academy --- Product Requirements Document (PRD)
 
-**Product:** Dev Techs Academy Website\
+**Product:** Dave Techs Academy Website\
 **Document Version:** 1.0\
 **Status:** Product Definition / Upgrade Specification\
 **Platform:** Responsive Web Application\
 **Primary Stack:** TypeScript + React + Vite\
 **Payment Provider:** Paystack\
-**Brand:** Dev Techs Academy\
+**Brand:** Dave Techs Academy\
 **Primary Brand Colors:** Black + Gold\
 **Secondary UI Support:** Dark Theme + Light Theme
 
@@ -14,7 +14,7 @@
 
 ## 1. Product Overview
 
-Dev Techs Academy is a modern technology education platform designed to
+Dave Techs Academy is a modern technology education platform designed to
 connect learners with practical technology training both **online and
 physically at academy branches**.
 
@@ -31,7 +31,7 @@ should become the central digital platform through which a visitor can:
 -   Receive confirmation after successful payment.
 -   Track their applications/enrollments from a learner dashboard.
 -   Receive course-related communication.
--   Contact Dev Techs for assistance.
+-   Contact Dave Techs for assistance.
 -   Discover new courses and opportunities.
 
 The upgraded website should feel like a **premium technology academy**,
@@ -52,7 +52,7 @@ application → payment → enrollment.
 ### Core Business Goal
 
 Turn the website into a digital acquisition and enrollment channel for
-Dev Techs Academy.
+Dave Techs Academy.
 
 ### Primary Success Path
 
@@ -201,7 +201,7 @@ upgraded substantially.
     -   Rating.
     -   Price.
     -   Enrollment CTA.
--   "Why Choose Dev Techs?" section exists.
+-   "Why Choose Dave Techs?" section exists.
 -   "Your learning journey" section exists.
 -   Dark blue technology-oriented visual direction already exists.
 
@@ -236,9 +236,9 @@ Improve this with:
 
 The hero should immediately answer:
 
--   What is Dev Techs?
+-   What is Dave Techs?
 -   What can I learn?
--   Why should I trust Dev Techs?
+-   Why should I trust Dave Techs?
 -   Can I learn online?
 -   Can I attend physically?
 -   What should I do next?
@@ -253,7 +253,7 @@ Secondary CTA:
 
 ### 4. The current lower sections need stronger visual hierarchy
 
-"Why Choose Dev Techs?" and "Your Learning Journey" should be redesigned
+"Why Choose Dave Techs?" and "Your Learning Journey" should be redesigned
 as polished sections with:
 
 -   Scroll reveal.
@@ -307,7 +307,7 @@ After authentication:
 
 Desktop header:
 
--   Dev Techs logo.
+-   Dave Techs logo.
 -   Home.
 -   Courses.
 -   About.
@@ -579,7 +579,7 @@ Each branch should contain:
 
 Example:
 
-**Dev Techs --- Abeokuta Branch**
+**Dave Techs --- Abeokuta Branch**
 
 Location: Abeokuta, Ogun State
 
@@ -730,7 +730,7 @@ modal.
 
 Example:
 
-> **Welcome to Dev Techs! 🎉**
+> **Welcome to Dave Techs! 🎉**
 >
 > Your account has been created successfully.
 >
@@ -918,7 +918,7 @@ Avoid excessive animation.
 
 ------------------------------------------------------------------------
 
-# 24. Why Choose Dev Techs?
+# 24. Why Choose Dave Techs?
 
 Redesign the existing section into feature cards.
 
@@ -1605,7 +1605,7 @@ Recommended events:
 -   Payment failed.
 -   Contact form submitted.
 
-This will allow Dev Techs to identify where users drop out of the
+This will allow Dave Techs to identify where users drop out of the
 enrollment funnel.
 
 ------------------------------------------------------------------------
@@ -1693,7 +1693,7 @@ Footer should contain:
 
 Include:
 
-**© Dev Techs Academy --- All Rights Reserved.**
+**© Dave Techs Academy --- All Rights Reserved.**
 
 ------------------------------------------------------------------------
 
@@ -2054,7 +2054,7 @@ The user should never feel lost.
 A visitor should be able to enter the homepage and understand within
 seconds:
 
-1.  What Dev Techs is.
+1.  What Dave Techs is.
 2.  What they can learn.
 3.  How much courses cost.
 4.  Whether they can learn online or physically.

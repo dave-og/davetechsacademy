@@ -17,8 +17,8 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--color-gold);
-  background-color: rgba(212, 175, 55, 0.12);
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  background-color: rgba(255, 215, 0, 0.15);
+  border: 1px solid rgba(255, 215, 0, 0.3);
   padding: 4px 12px;
   border-radius: var(--radius-full);
   margin-bottom: var(--sp-3);
@@ -100,7 +100,7 @@
 
 .legal-sidebar__link--active {
   color: var(--color-gold);
-  background-color: rgba(212, 175, 55, 0.1);
+  background-color: rgba(255, 215, 0, 0.12);
   font-weight: 700;
 }
 

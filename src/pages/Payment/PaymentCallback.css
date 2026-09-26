@@ -5,7 +5,7 @@
 .payment-callback-page {
   min-height: calc(100vh - var(--header-height));
   padding: var(--sp-16) 0 var(--sp-20);
-  background: radial-gradient(circle at 50% 15%, rgba(212, 175, 55, 0.06) 0%, transparent 60%);
+  background: radial-gradient(circle at 50% 15%, rgba(255, 215, 0, 0.08) 0%, transparent 60%);
 }
 
 .payment-card {

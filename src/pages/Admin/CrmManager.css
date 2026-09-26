@@ -33,7 +33,7 @@
 
 .crm-tab-btn--active {
   color: var(--color-gold);
-  background-color: rgba(212, 175, 55, 0.12);
+  background-color: rgba(255, 215, 0, 0.15);
   border-bottom: 2px solid var(--color-gold);
 }
 
@@ -130,7 +130,7 @@
 }
 
 .crm-token-btn:hover {
-  background-color: rgba(212, 175, 55, 0.15);
+  background-color: rgba(255, 215, 0, 0.18);
   border-color: var(--color-gold);
 }
 

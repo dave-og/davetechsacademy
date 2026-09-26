@@ -12,7 +12,7 @@
 .branch-card:hover {
   transform: translateY(-6px);
   border-color: var(--border-gold-subtle);
-  box-shadow: var(--shadow-xl), 0 0 25px rgba(212, 175, 55, 0.12);
+  box-shadow: var(--shadow-xl), 0 0 25px rgba(255, 215, 0, 0.2);
 }
 
 .branch-card__media {
@@ -205,8 +205,8 @@
 }
 
 .branch-course-tag {
-  background: rgba(212, 175, 55, 0.1);
-  border: 1px solid rgba(212, 175, 55, 0.25);
+  background: rgba(255, 215, 0, 0.12);
+  border: 1px solid rgba(255, 215, 0, 0.3);
   color: var(--gold-primary);
   font-size: 11px;
   font-weight: 700;

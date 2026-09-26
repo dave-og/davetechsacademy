@@ -6,7 +6,7 @@
 
 /* Welcome Banner */
 .dash-welcome-banner {
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(5, 5, 5, 0.8) 100%), var(--bg-card);
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(5, 5, 5, 0.8) 100%), var(--bg-card);
   border: 1px solid var(--border-gold-subtle);
   border-radius: var(--radius-xl);
   padding: var(--sp-8);
@@ -26,7 +26,7 @@
   right: -10%;
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.18) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -36,8 +36,8 @@
   font-weight: 800;
   letter-spacing: 1.5px;
   color: var(--gold-primary);
-  background: rgba(212, 175, 55, 0.15);
-  border: 1px solid rgba(212, 175, 55, 0.3);
+  background: rgba(255, 215, 0, 0.15);
+  border: 1px solid rgba(255, 215, 0, 0.3);
   padding: 3px 10px;
   border-radius: var(--radius-full);
   margin-bottom: var(--sp-3);
@@ -282,7 +282,7 @@
   font-weight: 800;
   text-transform: uppercase;
   color: var(--gold-primary);
-  background: rgba(212, 175, 55, 0.15);
+  background: rgba(255, 215, 0, 0.15);
   padding: 2px 6px;
   border-radius: 4px;
 }
@@ -379,7 +379,7 @@
   background: var(--gold-primary);
   margin-top: 5px;
   flex-shrink: 0;
-  box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
 }
 
 .dash-timetable-content {

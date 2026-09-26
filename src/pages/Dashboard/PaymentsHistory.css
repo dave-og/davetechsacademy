@@ -31,7 +31,7 @@
 
 .pay-stat-card--highlight {
   border-color: var(--border-gold-subtle);
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, var(--bg-card) 100%);
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.12) 0%, var(--bg-card) 100%);
 }
 
 .pay-stat-card__lbl {

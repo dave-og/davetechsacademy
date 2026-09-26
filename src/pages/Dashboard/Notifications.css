@@ -57,7 +57,7 @@
 }
 
 .notifs-tab--active {
-  background: rgba(212, 175, 55, 0.15);
+  background: rgba(255, 215, 0, 0.15);
   border-color: var(--border-gold-subtle);
   color: var(--gold-primary);
   font-weight: 700;
@@ -82,7 +82,7 @@
 
 .notif-card--unread {
   border-left: 4px solid var(--gold-primary);
-  background: linear-gradient(90deg, rgba(212, 175, 55, 0.05) 0%, var(--bg-card) 100%);
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.08) 0%, var(--bg-card) 100%);
 }
 
 .notif-card:hover {

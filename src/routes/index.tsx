@@ -52,29 +52,14 @@ const Terms = lazy(() => import("../pages/Legal/Terms").then((m) => ({ default: 
 const Privacy = lazy(() => import("../pages/Legal/Privacy").then((m) => ({ default: m.Privacy })));
 const RefundPolicy = lazy(() => import("../pages/Legal/RefundPolicy").then((m) => ({ default: m.RefundPolicy })));
 
+// About, Testimonials & NotFound
+const About = lazy(() => import("../pages/About/About").then((m) => ({ default: m.About })));
+const Testimonials = lazy(() => import("../pages/Testimonials/Testimonials").then((m) => ({ default: m.Testimonials })));
+const NotFound = lazy(() => import("../pages/NotFound/NotFound").then((m) => ({ default: m.NotFound })));
+
 // Helper to wrap route elements in Suspense
 const withSuspense = (element: React.ReactNode) => (
   <Suspense fallback={<PageFallback />}>{element}</Suspense>
-);
-
-// Placeholder page component for routes not yet implemented
-const Placeholder = ({ title }: { title: string }) => (
-  <div
-    className="section container"
-    style={{
-      minHeight: "60vh",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-    }}
-  >
-    <div style={{ textAlign: "center" }}>
-      <h1 className="section__title">{title}</h1>
-      <p className="section__subtitle" style={{ marginTop: "var(--sp-4)" }}>
-        This page is coming soon in a future phase.
-      </p>
-    </div>
-  </div>
 );
 
 // Child routes rendered inside PageLayout <Outlet />
@@ -82,11 +67,11 @@ export const routes = [
   { index: true, element: withSuspense(<Home />) },
   { path: "courses", element: withSuspense(<Courses />) },
   { path: "courses/:slug", element: withSuspense(<CourseDetail />) },
-  { path: "about", element: <Placeholder title="About" /> },
+  { path: "about", element: withSuspense(<About />) },
   { path: "instructors", element: withSuspense(<Instructors />) },
   { path: "instructors/:id", element: withSuspense(<InstructorDetail />) },
   { path: "branches", element: withSuspense(<Branches />) },
-  { path: "testimonials", element: <Placeholder title="Testimonials" /> },
+  { path: "testimonials", element: withSuspense(<Testimonials />) },
   { path: "contact", element: withSuspense(<Contact />) },
   { path: "login", element: withSuspense(<Login />) },
   { path: "signup", element: withSuspense(<Signup />) },
@@ -157,7 +142,7 @@ export const routes = [
   { path: "terms", element: withSuspense(<Terms />) },
   { path: "privacy", element: withSuspense(<Privacy />) },
   { path: "refund-policy", element: withSuspense(<RefundPolicy />) },
-  { path: "*", element: <Placeholder title="404 — Page Not Found" /> },
+  { path: "*", element: withSuspense(<NotFound />) },
 ];
 
 export { createBrowserRouter };

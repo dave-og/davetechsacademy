@@ -5,7 +5,7 @@
 .apply-page {
   min-height: calc(100vh - var(--header-height));
   padding: var(--sp-12) 0 var(--sp-20);
-  background: radial-gradient(circle at 50% 10%, rgba(212, 175, 55, 0.04) 0%, transparent 50%);
+  background: radial-gradient(circle at 50% 10%, rgba(255, 215, 0, 0.08) 0%, transparent 50%);
 }
 
 .apply-header {
@@ -186,7 +186,7 @@
 
 .course-select-card--selected {
   border-color: var(--gold);
-  background: rgba(212, 175, 55, 0.08);
+  background: rgba(255, 215, 0, 0.12);
   box-shadow: var(--shadow-gold);
 }
 
@@ -307,7 +307,7 @@
 
 .learning-mode-card--selected {
   border-color: var(--gold);
-  background: rgba(212, 175, 55, 0.08);
+  background: rgba(255, 215, 0, 0.12);
   box-shadow: var(--shadow-gold);
 }
 
@@ -372,7 +372,7 @@
 
 .branch-card--selected {
   border-color: var(--gold);
-  background: rgba(212, 175, 55, 0.08);
+  background: rgba(255, 215, 0, 0.12);
   box-shadow: var(--shadow-gold);
 }
 

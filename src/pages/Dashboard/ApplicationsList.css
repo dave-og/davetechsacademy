@@ -49,7 +49,7 @@
 }
 
 .apps-tab--active {
-  background: rgba(212, 175, 55, 0.15);
+  background: rgba(255, 215, 0, 0.15);
   border-color: var(--border-gold-subtle);
   color: var(--gold-primary);
   font-weight: 700;
@@ -63,6 +63,7 @@
   border-radius: var(--radius-md);
   font-size: 13px;
   width: 260px;
+  max-width: 100%;
   transition: border-color var(--transition-fast);
 }
 

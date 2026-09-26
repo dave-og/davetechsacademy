@@ -1,0 +1,53 @@
+/* ================================================================
+   404 NOT FOUND PAGE — Styles
+   ================================================================ */
+
+.not-found-page {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-16) var(--sp-4);
+  text-align: center;
+}
+
+.not-found-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-2xl);
+  padding: var(--sp-12) var(--sp-8);
+  max-width: 580px;
+  width: 100%;
+  box-shadow: var(--shadow-xl);
+}
+
+.not-found-code {
+  font-size: 80px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--gold);
+  margin-bottom: var(--sp-2);
+  letter-spacing: -2px;
+  text-shadow: var(--shadow-gold);
+}
+
+.not-found-title {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--sp-3);
+}
+
+.not-found-desc {
+  font-size: var(--fs-base);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--sp-8);
+}
+
+.not-found-actions {
+  display: flex;
+  gap: var(--sp-3);
+  justify-content: center;
+  flex-wrap: wrap;
+}

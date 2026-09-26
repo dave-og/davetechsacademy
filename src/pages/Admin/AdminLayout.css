@@ -82,7 +82,7 @@
 }
 
 .admin-nav-item--active {
-  background-color: rgba(212, 175, 55, 0.12);
+  background-color: rgba(255, 215, 0, 0.15);
   color: var(--color-gold);
   border-left: 3px solid var(--color-gold);
 }
