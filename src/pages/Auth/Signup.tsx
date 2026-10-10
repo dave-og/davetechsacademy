@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { Button } from "../../components/ui/Button";
 import { Modal } from "../../components/ui/Modal";
+import { GoogleAuthButton } from "../../components/common/GoogleAuthButton";
 import { trackSignupStart } from "../../services/analytics";
 import "./Auth.css";
 
@@ -119,6 +120,17 @@ export const Signup: React.FC = () => {
               <span>{serverError}</span>
             </div>
           )}
+
+          {/* Continue with Google */}
+          <GoogleAuthButton
+            label="Sign up with Google"
+            onSuccess={() => setShowWelcomeModal(true)}
+            onError={(err) => setServerError(err)}
+          />
+
+          <div className="auth-divider">
+            <span>or register with email</span>
+          </div>
 
           <form onSubmit={handleSubmit} className="auth-form" noValidate>
             {/* Full Name */}

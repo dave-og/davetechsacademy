@@ -142,6 +142,29 @@ export const DashboardLayout: React.FC = () => {
           </div>
         </div>
 
+        {user?.role === "admin" && (
+          <div style={{ padding: "0 var(--sp-4) var(--sp-3)" }}>
+            <Link
+              to="/admin"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "var(--sp-2)",
+                padding: "var(--sp-2) var(--sp-3)",
+                background: "linear-gradient(135deg, #f59e0b, #d97706)",
+                color: "#fff",
+                fontWeight: 600,
+                borderRadius: "var(--radius-md)",
+                textDecoration: "none",
+                fontSize: "var(--font-sm)",
+              }}
+            >
+              ⚡ Switch to Admin Console
+            </Link>
+          </div>
+        )}
+
         {/* Navigation Items */}
         <nav className="dash-nav" aria-label="Student Dashboard Navigation">
           {navItems.map((item) => (

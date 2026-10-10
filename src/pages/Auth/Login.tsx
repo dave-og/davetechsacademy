@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { Button } from "../../components/ui/Button";
+import { GoogleAuthButton } from "../../components/common/GoogleAuthButton";
 import "./Auth.css";
 
 export const Login: React.FC = () => {
-  const { login, isAuthenticated } = useAuth();
+  const { user, login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -22,7 +23,8 @@ export const Login: React.FC = () => {
 
   // If already authenticated, redirect
   if (isAuthenticated) {
-    navigate(from, { replace: true });
+    const dest = user?.role === "admin" && from === "/dashboard" ? "/admin" : from;
+    navigate(dest, { replace: true });
   }
 
   const validate = (): boolean => {
@@ -53,7 +55,8 @@ export const Login: React.FC = () => {
     setIsSubmitting(false);
 
     if (result.success) {
-      navigate(from, { replace: true });
+      const dest = result.user?.role === "admin" && from === "/dashboard" ? "/admin" : from;
+      navigate(dest, { replace: true });
     } else {
       setServerError(result.error || "Login failed. Please verify your credentials.");
     }
@@ -93,6 +96,17 @@ export const Login: React.FC = () => {
               <span>{serverError}</span>
             </div>
           )}
+
+          {/* Continue with Google */}
+          <GoogleAuthButton
+            label="Continue with Google"
+            onSuccess={() => navigate(from, { replace: true })}
+            onError={(err) => setServerError(err)}
+          />
+
+          <div className="auth-divider">
+            <span>or sign in with email</span>
+          </div>
 
           <form onSubmit={handleSubmit} className="auth-form" noValidate>
             {/* Email */}

@@ -81,6 +81,13 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
 
           {isAuthenticated ? (
             <>
+              {user?.role === "admin" && (
+                <Link to="/admin">
+                  <Button variant="primary" size="sm" style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)" }}>
+                    ⚡ Admin
+                  </Button>
+                </Link>
+              )}
               <Link to="/dashboard">
                 <Button variant="secondary" size="sm">
                   👤 {user?.fullName.split(" ")[0] || "Dashboard"}
@@ -146,6 +153,13 @@ export const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme }) => {
             <ThemeToggle theme={theme} onToggle={onToggleTheme} />
             {isAuthenticated ? (
               <>
+                {user?.role === "admin" && (
+                  <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="primary" size="sm" style={{ background: "linear-gradient(135deg, #f59e0b, #d97706)", width: "100%" }}>
+                      ⚡ Admin Portal
+                    </Button>
+                  </Link>
+                )}
                 <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
                   <Button variant="secondary" size="sm">
                     Dashboard ({user?.fullName})

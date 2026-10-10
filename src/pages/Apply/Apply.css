@@ -286,6 +286,7 @@
   grid-template-columns: repeat(2, 1fr);
   gap: var(--sp-6);
   margin-bottom: var(--sp-6);
+  align-items: stretch;
 }
 
 .learning-mode-card {
@@ -298,6 +299,7 @@
   text-align: left;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .learning-mode-card:hover {
@@ -307,13 +309,46 @@
 
 .learning-mode-card--selected {
   border-color: var(--gold);
-  background: rgba(255, 215, 0, 0.12);
-  box-shadow: var(--shadow-gold);
+  background: rgba(255, 215, 0, 0.08);
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.22);
+}
+
+.learning-mode-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--sp-3);
+  gap: var(--sp-2);
 }
 
 .learning-mode-card__icon {
   font-size: 36px;
-  margin-bottom: var(--sp-3);
+  line-height: 1;
+}
+
+.learning-mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.learning-mode-badge--online {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.35);
+}
+
+.learning-mode-badge--physical {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--gold);
+  border: 1px solid rgba(245, 158, 11, 0.4);
 }
 
 .learning-mode-card__title {
@@ -333,7 +368,7 @@
 .learning-mode-card__perks {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 0 0 var(--sp-4) 0;
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
@@ -343,8 +378,180 @@
 
 .learning-mode-card__perks li {
   display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  line-height: 1.45;
+}
+
+.learning-mode-note {
+  margin-top: auto;
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-xs);
+  line-height: 1.45;
+}
+
+.learning-mode-note--online {
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px dashed rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+}
+
+.learning-mode-note--physical {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px dashed rgba(245, 158, 11, 0.35);
+  color: #fbbf24;
+}
+
+/* Direct Contact Buttons inside Physical Card */
+.physical-contact-actions {
+  margin-top: var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding-top: var(--sp-4);
+  border-top: 1px solid rgba(255, 215, 0, 0.15);
+}
+
+.apply-contact-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+  transition: all var(--transition-base);
+  text-align: center;
+  cursor: pointer;
+}
+
+.apply-contact-btn--whatsapp {
+  background: #25d366;
+  color: #0b1911 !important;
+  font-weight: var(--fw-bold);
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+}
+
+.apply-contact-btn--whatsapp:hover {
+  background: #22bf5b;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.45);
+}
+
+.apply-call-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1-5);
+}
+
+.apply-contact-btn--call {
+  background: rgba(255, 215, 0, 0.12);
+  color: var(--gold) !important;
+  border: 1px solid var(--gold);
+}
+
+.apply-contact-btn--call:hover {
+  background: rgba(255, 215, 0, 0.22);
+  color: #fff !important;
+  transform: translateY(-1px);
+}
+
+.apply-contact-alt-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  padding: var(--sp-1) var(--sp-2);
+}
+
+.apply-contact-alt-link {
+  color: var(--gold) !important;
+  font-weight: var(--fw-bold);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color var(--transition-base);
+}
+
+.apply-contact-alt-link:hover {
+  color: #fff !important;
+}
+
+/* Nearest Branch Assistance Box */
+.branch-finder-box {
+  margin-top: var(--sp-3);
+  padding: var(--sp-4);
+  background: rgba(18, 18, 18, 0.95);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2-5);
+  cursor: default;
+}
+
+.branch-finder-title {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-bold);
+  color: var(--gold);
+  display: flex;
   align-items: center;
   gap: var(--sp-2);
+}
+
+.branch-finder-subtext {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.branch-finder-row {
+  display: flex;
+  gap: var(--sp-2);
+  margin-top: var(--sp-1);
+}
+
+.branch-finder-input {
+  flex: 1;
+  font-size: var(--fs-sm);
+  background: var(--bg-tertiary);
+}
+
+.branch-finder-btn {
+  white-space: nowrap;
+  font-size: var(--fs-xs);
+}
+
+.branch-finder-match-note {
+  font-size: var(--fs-xs);
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-md);
+  margin-top: var(--sp-1);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.confirmation-physical-actions {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.confirmation-contact-box {
+  background: rgba(255, 215, 0, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: var(--radius-xl);
+  padding: var(--sp-6);
+  text-align: center;
+  margin-bottom: var(--sp-4);
 }
 
 /* Step 5: Branch & Cohorts */

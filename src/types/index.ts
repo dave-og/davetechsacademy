@@ -65,6 +65,7 @@ export interface Student {
   state?: string;
   role?: "student" | "admin";
   avatar?: string;
+  bio?: string;
   createdAt: string;
 }
 

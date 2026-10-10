@@ -298,3 +298,31 @@
     gap: var(--sp-2);
   }
 }
+
+/* OAuth Callback Loading Spinner */
+.callback-spinner-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+}
+
+.callback-gold-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(255, 215, 0, 0.2);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: authSpin 0.9s cubic-bezier(0.6, 0.2, 0.4, 0.8) infinite;
+}
+
+@keyframes authSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+

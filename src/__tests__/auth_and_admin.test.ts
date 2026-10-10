@@ -33,6 +33,26 @@ describe("Auth, Admin, CRM & Analytics Functionality", () => {
       const isWrong = await verifyPassword("WrongPassword123!", hash);
       expect(isWrong).toBe(false);
     });
+
+    it("should verify admin and student demo credentials reliably", async () => {
+      // Test admin password against both seeded formats
+      const adminPass = "AdminDevTechs2026!";
+      const adminHash1 = "sha256_dtaadmin_301d42646ca63fb94efd0a06be0b1f3b16248983d24e96c50ff6950bfe1b0246";
+      const adminHashLegacy = "sha256_dta_salt_demo_admin_5d298319f07a1c8932efbc129487103ca092fe98";
+
+      expect(await verifyPassword(adminPass, adminHash1)).toBe(true);
+      expect(await verifyPassword(adminPass, adminHashLegacy)).toBe(true);
+      expect(await verifyPassword("WrongPass!", adminHash1)).toBe(false);
+
+      // Test student password against both seeded formats
+      const studentPass = "Password123!";
+      const studentHash1 = "sha256_dtastudent_25c27b211a2739fe31e965bd7a90c0d97345fbd328d9adbdefb4aef97fbe0089";
+      const studentHashLegacy = "sha256_dta_salt_demo_student_b40283c7a02c813f5c719e731c261e434f31cfa0";
+
+      expect(await verifyPassword(studentPass, studentHash1)).toBe(true);
+      expect(await verifyPassword(studentPass, studentHashLegacy)).toBe(true);
+      expect(await verifyPassword("WrongPass!", studentHash1)).toBe(false);
+    });
   });
 
   describe("Notifications Service", () => {

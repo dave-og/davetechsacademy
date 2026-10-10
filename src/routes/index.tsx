@@ -15,6 +15,7 @@ const Contact = lazy(() => import("../pages/Contact/Contact").then((m) => ({ def
 const Login = lazy(() => import("../pages/Auth/Login").then((m) => ({ default: m.Login })));
 const Signup = lazy(() => import("../pages/Auth/Signup").then((m) => ({ default: m.Signup })));
 const ForgotPassword = lazy(() => import("../pages/Auth/ForgotPassword").then((m) => ({ default: m.ForgotPassword })));
+const AuthCallback = lazy(() => import("../pages/Auth/AuthCallback").then((m) => ({ default: m.AuthCallback })));
 const Apply = lazy(() => import("../pages/Apply/Apply").then((m) => ({ default: m.Apply })));
 const PaymentCallback = lazy(() => import("../pages/Payment/PaymentCallback").then((m) => ({ default: m.PaymentCallback })));
 
@@ -75,6 +76,7 @@ export const routes = [
   { path: "contact", element: withSuspense(<Contact />) },
   { path: "login", element: withSuspense(<Login />) },
   { path: "signup", element: withSuspense(<Signup />) },
+  { path: "auth/callback", element: withSuspense(<AuthCallback />) },
   { path: "forgot-password", element: withSuspense(<ForgotPassword />) },
   { path: "reset-password", element: withSuspense(<ForgotPassword />) },
   { path: "apply", element: withSuspense(<Apply />) },

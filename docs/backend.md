@@ -1,1258 +1,411 @@
-# Dave Techs Academy — Backend Development TODO
+# Dave Techs Academy — Supabase Backend Architecture & Development Roadmap
 
-## Backend Stack
+## Official Backend Stack
 
-- Frontend already completed: React 18 + TypeScript + Vite
-- Backend: PHP
-- Database: MySQL
-- Payment: Paystack
-- API style: REST API
-- Existing product scope: course discovery, application/enrollment, multi-campus learning, student LMS, certificate verification, affiliate/referral, admin management, CRM/communications, analytics
-
-> This TODO is based directly on the Dave Techs Academy Executive Overview & Platform Summary. The backend should be built to power the already-completed frontend rather than redesigning it.
-
----
-
-# PHASE 0 — Backend Readiness & Frontend/API Contract
-
-## Objective
-Prepare the completed frontend for backend integration.
-
-- [ ] Back up/tag the current completed frontend
-- [ ] Review every frontend route that requires backend data
-- [ ] Review existing mock/seed/localStorage data
-- [ ] Identify every frontend form and required field
-- [ ] Identify every dashboard data requirement
-- [ ] Identify every admin data requirement
-- [ ] Identify payment states used by the frontend
-- [ ] Identify notification states
-- [ ] Identify certificate data requirements
-- [ ] Identify affiliate/referral data requirements
-- [ ] Identify existing API placeholders
-- [ ] Define API base URL
-- [ ] Define `/api/v1` versioning convention
-- [ ] Define request/response JSON format
-- [ ] Define standard error response
-- [ ] Define pagination/filter/sort conventions
-- [ ] Define authentication/session strategy
-- [ ] Define date/time format
-- [ ] Define NGN/₦ currency handling
-- [ ] Produce an API contract before implementation
-
-### Acceptance
-- [ ] Every backend-dependent frontend feature has a planned endpoint
-- [ ] Existing frontend routes/components are preserved
-- [ ] Temporary frontend persistence is documented for migration
-
----
-
-# PHASE 1 — PHP Backend Foundation
-
-## Objective
-Create the core PHP API architecture.
-
-- [ ] Initialize PHP backend project
-- [ ] Configure environment variables
-- [ ] Configure development environment
-- [ ] Configure production environment
-- [ ] Create public API entry point
-- [ ] Create API router
-- [ ] Create controllers
-- [ ] Create services/business logic layer
-- [ ] Create repositories/data-access layer
-- [ ] Create models/data-transfer structures
-- [ ] Create middleware system
-- [ ] Create request validation layer
-- [ ] Create standardized API response helper
-- [ ] Create centralized exception/error handling
-- [ ] Create logging
-- [ ] Configure CORS appropriately
-- [ ] Create API rate limiting
-- [ ] Use PDO with prepared statements
-- [ ] Create database configuration
-- [ ] Create health-check endpoint
-
-### Suggested Structure
+- **Frontend:** React 18 + TypeScript + Vite *(completed, frozen UI & design system)*
+- **Backend Infrastructure:** Supabase
+  - **Database:** PostgreSQL (with RLS, Indexes, Constraints, Triggers & RPCs)
+  - **Authentication:** Supabase Auth (JWT, email/password, session persistence, role claims)
+  - **Storage:** Supabase Storage (Buckets for course resources, submissions, certificates, avatars)
+  - **Serverless Compute:** Supabase Edge Functions (Deno / TypeScript for secure Paystack operations, webhooks, CRM triggers)
+- **Payment Gateway:** Paystack (Secure server-to-server initialization & HMAC webhook verification via Supabase Edge Functions)
+- **Official Product Name:** DAVE TECHS
+- **Existing Product Scope:** Course discovery & catalog, 6-step multi-campus application flow, Paystack payment processing, enrollment fulfillment, student LMS & dashboard, instructor grading, cryptographic certificate verification, affiliate/referral tracking, CRM communications, admin portals, and analytics telemetry.
 
 ```text
-backend/
-├── public/
-├── config/
-├── routes/
-├── controllers/
-├── services/
-├── repositories/
-├── models/
-├── middleware/
-├── validators/
-├── database/
-├── storage/
-├── logs/
-└── tests/
+React 18 + TypeScript + Vite (Client)
+                 ↓
+             Supabase
+ ┌──────────────┬────────────────┬────────────────┐
+ │              │                │                │
+Auth         PostgreSQL       Storage       Edge Functions
+ │              │                │                │
+ └──────────────┴────────────────┴────────────────┘
+                                      │
+                                  Paystack
 ```
-
-### Acceptance
-- [ ] PHP API starts successfully
-- [ ] Health endpoint responds
-- [ ] Database connection works
-- [ ] Standard JSON responses work
-- [ ] Errors are handled consistently
 
 ---
 
-# PHASE 2 — MySQL Database Architecture
+# PHASE 0 — Frontend Audit & Architecture Contract
 
 ## Objective
-Build the persistent data layer required by the platform.
+Establish the authoritative integration contract between the completed React 18 frontend and the Supabase backend.
+
+- [x] Review all frontend routes (`/`, `/courses`, `/courses/:id`, `/apply`, `/payment/callback`, `/login`, `/signup`, `/dashboard/*`, `/admin/*`, `/verify/*`, `/referral`)
+- [x] Audit all existing localStorage keys (`devtechs_applications_store`, `devtechs_payment_transactions`, `devtechs_lms_*`, `devtechs_notifications`, `devtechs_affiliate_profile`, `devtechs_crm_leads`)
+- [x] Map frontend data types (`src/types/`) to PostgreSQL schemas
+- [x] Establish environment variable conventions (`VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_PAYSTACK_PUBLIC_KEY`)
+- [x] Establish backend Edge Function secrets strategy (`PAYSTACK_SECRET_KEY`, `PAYSTACK_WEBHOOK_SECRET`, `SUPABASE_SERVICE_ROLE_KEY`)
+- [x] Define NGN / ₦ currency precision rules (Store as numeric/cents in PostgreSQL, validate exact price in Edge Functions)
+
+---
+
+# PHASE 1 — Supabase Foundation & Client Architecture
+
+## Objective
+Initialize the centralized Supabase client module and directory layout.
+
+- [ ] Install `@supabase/supabase-js` client library
+- [ ] Create centralized client singleton in `src/lib/supabase.ts`
+- [ ] Configure environment variables with type-safe fallbacks
+- [ ] Create Supabase local project configuration in `supabase/config.toml`
+- [ ] Establish directory structure:
+  ```text
+  supabase/
+  ├── config.toml
+  ├── migrations/
+  │   ├── 20261003000001_initial_schema.sql
+  │   ├── 20261003000002_row_level_security.sql
+  │   ├── 20261003000003_storage_buckets.sql
+  │   └── 20261003000004_functions_and_triggers.sql
+  ├── seed.sql
+  └── functions/
+      ├── initialize-payment/
+      │   └── index.ts
+      ├── verify-payment/
+      │   └── index.ts
+      └── payment-webhook/
+          └── index.ts
+  ```
+- [ ] Configure CORS and allowed origins for Edge Functions
+
+### Acceptance Criteria
+- Centralized Supabase client exports type-safe instance
+- Zero service-role or secret keys leaked to frontend client bundle
+- Environment variables properly validated
+
+---
+
+# PHASE 2 — PostgreSQL Database Architecture & Schema
+
+## Objective
+Design and implement the full relational database schema in PostgreSQL migrations.
 
 ### Core Tables
+1. **User Identity & Roles:**
+   - `profiles` (id references `auth.users(id)` on delete cascade, full_name, email, phone, avatar_url, role, bio, title, created_at, updated_at)
+   - `user_roles` (user_id, role enum: `student`, `instructor`, `admin`, `super_admin`)
+2. **Campuses & Cohorts:**
+   - `branches` (id, name, slug, address, city, state, phone, email, is_active, capacity, created_at)
+   - `cohorts` (id, course_id, branch_id, name, code, start_date, end_date, schedule_type, capacity, enrolled_count, status, created_at)
+3. **Course Catalog & Curriculum:**
+   - `course_categories` (id, name, slug, icon, description, sort_order)
+   - `courses` (id, slug, title, tagline, description, full_description, category_id, level, duration, format, badge, popular, featured, price, original_price, rating, reviews_count, instructor_id, syllabus JSONB, weekly_objectives JSONB, prerequisites JSONB, faqs JSONB, learning_outcomes JSONB, is_active, created_at, updated_at)
+   - `course_modules` (id, course_id, title, description, sort_order, duration, created_at)
+   - `course_lessons` (id, module_id, course_id, title, duration, video_url, content, resources JSONB, sort_order, is_free_preview, created_at)
+4. **Instructors & Assignments:**
+   - `instructors` (id, profile_id references profiles, name, title, bio, avatar, rating, students_count, courses_count, experience_years, credentials JSONB, social_links JSONB)
+   - `instructor_courses` (instructor_id, course_id, role, assigned_at)
+5. **Applications & Assessments:**
+   - `applications` (id, application_number, user_id references auth.users, course_id, learning_mode, branch_id, cohort_id, first_name, last_name, email, phone, state_of_residence, education_level, employment_status, programming_experience, tuition_amount, discount_amount, total_amount, currency, status, payment_status, created_at, updated_at)
+   - `application_assessments` (id, application_id, programming_experience, technical_goals, weekly_commitment_hours, motivation_essay, preferred_schedule, status)
+   - `emergency_contacts` (id, application_id, contact_name, relationship, phone_number, email_address, physical_address)
+6. **Payments & Invoicing:**
+   - `payments` (id, payment_reference, application_id, user_id, course_id, amount, original_amount, currency, gateway, channel, status, paystack_transaction_id, metadata JSONB, paid_at, verified_at, created_at)
+   - `payment_events` (id, payment_id, reference, event_type, payload JSONB, created_at)
+   - `invoices` (id, invoice_number, application_id, payment_id, user_id, course_id, amount_paid, total_amount, status, issued_date, pdf_url, created_at)
+7. **Enrollments & Student Progress:**
+   - `enrollments` (id, student_id references auth.users, course_id, application_id, payment_id, branch_id, cohort_id, status, progress_percentage, enrolled_at, completed_at, certificate_issued, created_at)
+   - `lesson_progress` (id, enrollment_id, lesson_id, student_id, is_completed, completed_at, last_position_seconds)
+   - `attendance` (id, cohort_id, session_date, student_id, status, notes, recorded_by, created_at)
+   - `assignments` (id, course_id, module_id, title, description, max_score, due_date, created_at)
+   - `assignment_submissions` (id, assignment_id, student_id, submission_text, file_url, score, feedback, status, submitted_at, graded_at, graded_by)
+8. **Certificates & Verification:**
+   - `certificates` (id, certificate_number, student_id, course_id, enrollment_id, issue_date, grade, verification_code, qr_code_url, pdf_url, is_revoked, created_at)
+   - `certificate_verifications` (id, certificate_number, verified_at, ip_address, user_agent)
+9. **Affiliate & Referral Tracking:**
+   - `affiliate_profiles` (id, user_id references auth.users, referral_code, commission_rate_percentage, total_earnings, paid_earnings, pending_earnings, created_at)
+   - `referrals` (id, affiliate_id, referred_user_id, application_id, referral_code, status, click_count, created_at)
+   - `affiliate_commissions` (id, affiliate_id, referral_id, payment_id, enrollment_id, commission_amount, status, payout_reference, created_at)
+10. **CRM, Communications & Notifications:**
+    - `crm_contacts` (id, full_name, email, phone, lead_source, course_interest, status, notes, last_contacted_at, created_at)
+    - `communication_logs` (id, contact_id, channel, subject, message_body, status, sent_at)
+    - `notifications` (id, user_id, title, message, type, link, is_read, read_at, created_at)
+11. **Analytics Telemetry:**
+    - `analytics_events` (id, event_name, user_id, session_id, properties JSONB, created_at)
 
-- [ ] users
-- [ ] roles
-- [ ] permissions
-- [ ] user_roles
-- [ ] course_categories
-- [ ] courses
-- [ ] course_modules
-- [ ] course_lessons
-- [ ] instructors
-- [ ] instructor_courses
-- [ ] branches
-- [ ] branch_courses
-- [ ] cohorts
-- [ ] applications
-- [ ] application_assessments
-- [ ] emergency_contacts
-- [ ] enrollments
-- [ ] payments
-- [ ] payment_events
-- [ ] invoices
-- [ ] notifications
-- [ ] attendance
-- [ ] assignments
-- [ ] assignment_submissions
-- [ ] instructor_feedback
-- [ ] certificates
-- [ ] certificate_verifications
-- [ ] affiliate_profiles
-- [ ] referrals
-- [ ] affiliate_commissions
-- [ ] analytics_events
-- [ ] crm_contacts
-- [ ] communication_logs
-
-### Database Design
-
-- [ ] Define primary keys
-- [ ] Define foreign keys
-- [ ] Define unique constraints
-- [ ] Define indexes
-- [ ] Define created/updated timestamps
-- [ ] Define appropriate status fields
-- [ ] Define soft-delete/deactivation rules where required
-- [ ] Define transactional boundaries
-- [ ] Create migrations
-- [ ] Create rollback strategy
-- [ ] Create seeders
-- [ ] Seed course categories
-- [ ] Seed initial course records from approved academy data
-- [ ] Seed instructor records from approved academy data
-- [ ] Seed the currently documented branches
-- [ ] Seed cohorts only where approved
-
-### Acceptance
-- [ ] Database can be created from a clean installation
-- [ ] Migrations run successfully
-- [ ] Seed data loads successfully
-- [ ] Relationships enforce referential integrity
-- [ ] Critical duplicate records are prevented
+### Acceptance Criteria
+- All 11 table domains implemented with foreign keys, constraints, and timestamps.
+- Authoritative seed data loads courses, branches, cohorts, instructors, and categories.
+- Migrations apply idempotently without errors.
 
 ---
 
-# PHASE 3 — Authentication & Authorization
+# PHASE 3 — Supabase Authentication & User Profiles
 
 ## Objective
-Replace frontend-only authentication with secure PHP/MySQL authentication.
+Connect frontend authentication flows to Supabase Auth with automatic profile provisioning.
 
-### Student Authentication
+- [x] Configure Supabase Auth with Email / Password and Google OAuth provider:
+  - Google Client ID: `<YOUR_GOOGLE_CLIENT_ID>`
+  - Google Client Secret: `<YOUR_GOOGLE_CLIENT_SECRET>`
+- [x] Create PostgreSQL trigger function `public.handle_new_user()` to automatically create a `public.profiles` record upon `auth.users` insert
+- [x] Connect `src/context/AuthContext.tsx` and `src/hooks/useAuth.tsx` to `supabase.auth`
+- [x] Support flows:
+  - User Sign Up (`supabase.auth.signUp`)
+  - User Sign In (`supabase.auth.signInWithPassword`)
+  - Google Social Login & Sign Up (`supabase.auth.signInWithOAuth({ provider: 'google' })`)
+  - User Sign Out (`supabase.auth.signOut`)
+  - Session Hydration & Auto-Refresh (`supabase.auth.onAuthStateChange`)
+  - Password Reset Request (`supabase.auth.resetPasswordForEmail`)
+  - Password Update (`supabase.auth.updateUser`)
+  - Profile Retrieval & Editing (`public.profiles`)
+- [x] Maintain exact existing frontend UI forms and validation styles with Google Auth button integration
 
-- [ ] Register endpoint
-- [ ] Login endpoint
-- [ ] Logout endpoint
-- [ ] Current-user endpoint
-- [ ] Forgot-password endpoint
-- [ ] Reset-password endpoint
-- [ ] Change-password endpoint
-- [ ] Get profile endpoint
-- [ ] Update profile endpoint
-
-### Security
-
-- [ ] Secure password hashing
-- [ ] Never store plain-text passwords
-- [ ] Secure session/token mechanism
-- [ ] Secure cookie configuration where applicable
-- [ ] Authentication middleware
-- [ ] Session/token expiration
-- [ ] Login rate limiting
-- [ ] Input validation
-- [ ] Authorization checks
-- [ ] Prevent account enumeration where appropriate
-
-### Roles
-
-- [ ] Student role
-- [ ] Instructor role
-- [ ] Admin role
-- [ ] Super Admin role if required
-
-### Acceptance
-- [ ] Registration works
-- [ ] Login works
-- [ ] Logout works
-- [ ] Password recovery works
-- [ ] Protected API routes reject unauthenticated requests
-- [ ] Role-protected routes reject unauthorized users
-- [ ] Students cannot access another student's private records
+### Acceptance Criteria
+- Signup & Login support both Email/Password and Google OAuth
+- Profile creation trigger automatically activates on Google OAuth authentication
+- Session state updates reactively across dashboard components
 
 ---
 
-# PHASE 4 — Course & Catalog API
+# PHASE 4 — PostgreSQL Row Level Security (RLS) Policies
 
 ## Objective
-Power the completed course catalog with MySQL-backed data.
+Enforce strict multi-tenant authorization at the database level.
 
-### Public Course API
+- [ ] Enable RLS on ALL public schema tables (`ALTER TABLE ... ENABLE ROW LEVEL SECURITY;`)
+- [ ] Define helper functions:
+  - `public.is_admin()`: checks if `auth.uid()` has `admin` or `super_admin` in `public.profiles`
+  - `public.is_instructor()`: checks if `auth.uid()` is in `public.instructors`
+- [ ] **Public Read Policies:**
+  - `courses`, `course_categories`, `course_modules`, `course_lessons` (where free preview), `branches`, `cohorts`, `instructors` → Accessible to `anon` and `authenticated`
+- [ ] **Student Isolation Policies:**
+  - `profiles`: Users can select/update only where `id = auth.uid()`
+  - `applications`: Users can select/insert/update where `user_id = auth.uid()`
+  - `payments`, `invoices`: Users can select where `user_id = auth.uid()`
+  - `enrollments`: Students can select where `student_id = auth.uid()`
+  - `lesson_progress`: Students can select/upsert where `student_id = auth.uid()`
+  - `assignment_submissions`: Students can insert/select where `student_id = auth.uid()`
+  - `notifications`: Users can select/update where `user_id = auth.uid()`
+  - `certificates`: Students can view their own; Public can view verified certificates by certificate number
+- [ ] **Instructor Access Policies:**
+  - Instructors can view students enrolled in their assigned courses
+  - Instructors can view submissions and update scores/feedback for their courses
+  - Instructors can record attendance for their cohort sessions
+- [ ] **Admin Access Policies:**
+  - Full CRUD on courses, branches, cohorts, instructors, applications, enrollments, analytics, CRM, and system settings via `is_admin()` policy
 
-- [ ] List courses
-- [ ] Get course by ID
-- [ ] Get course by slug
-- [ ] List categories
-- [ ] List featured courses
-- [ ] List popular courses
-- [ ] Search courses
-- [ ] Filter by skill level
-- [ ] Filter by learning mode
-- [ ] Filter by duration
-- [ ] Filter by category
-- [ ] Sort by price
-- [ ] Sort by rating
-- [ ] Sort by popularity
-- [ ] Sort by newest
-- [ ] Paginate course results
-
-### Course Details
-
-- [ ] Description
-- [ ] Price
-- [ ] Level
-- [ ] Duration
-- [ ] Learning modes
-- [ ] Curriculum
-- [ ] Weekly objectives
-- [ ] Capstone project
-- [ ] Industry tools
-- [ ] Prerequisites
-- [ ] FAQs
-- [ ] Instructor
-- [ ] Student satisfaction/rating data
-- [ ] Certificate information
-- [ ] Related courses
-
-### Admin Course Management
-
-- [ ] Create course
-- [ ] Update course
-- [ ] Activate/deactivate course
-- [ ] Update course price
-- [ ] Update duration
-- [ ] Update description
-- [ ] Manage curriculum
-- [ ] Assign instructor
-- [ ] Manage category
-
-### Acceptance
-- [ ] Frontend course cards load from API
-- [ ] Search/filter/sort work
-- [ ] Course detail pages load from API
-- [ ] Inactive courses are not presented as available for new enrollment
+### Acceptance Criteria
+- Unauthorized users receive zero rows on sensitive queries
+- Students cannot read or mutate other students' applications, payments, or grades
+- Admins possess comprehensive administrative query rights
 
 ---
 
-# PHASE 5 — Branch / Campus / Cohort API
+# PHASE 5 — Course Catalog & Multi-Campus Data Services
 
 ## Objective
-Implement the multi-campus network described in the overview.
+Replace local static course and campus data with live PostgreSQL queries.
 
-### Documented Branches
+- [ ] Create `src/services/courseService.ts`:
+  - `getCourses(filters, sort, pagination)`
+  - `getCourseBySlug(slug)`
+  - `getCategories()`
+  - `getFeaturedCourses()`
+  - `getPopularCourses()`
+- [ ] Create `src/services/branchService.ts`:
+  - `getBranches()`
+  - `getBranchBySlug(slug)`
+  - `getCohortsByCourseAndBranch(courseId, branchId)`
+- [ ] Connect `src/pages/Courses/`, `src/pages/CourseDetail/`, and `src/pages/Home/` to the services with graceful offline fallback to initial academy data
 
-- [ ] Abeokuta Main Campus — Tech Innovation Corridor, Oke-Mosan
-- [ ] Victoria Island Executive Campus — Adeola Odeku Street, VI, Lagos
-- [ ] Ikeja Tech Hub — Allen Avenue, Ikeja, Lagos
-- [ ] Ibadan Innovation Center — Ring Road, Ibadan, Oyo State
-
-### Branch Data
-
-- [ ] Branch name
-- [ ] Address
-- [ ] Contact information
-- [ ] Opening hours
-- [ ] Coordinates/map information
-- [ ] Amenities
-- [ ] Capacity
-- [ ] Availability status
-
-### Amenities Model
-
-- [ ] High-spec labs
-- [ ] 24/7 solar power
-- [ ] Starlink/fiber internet
-
-Only store/display these as branch facts when the academy confirms them.
-
-### Cohorts
-
-- [ ] Create cohort
-- [ ] Assign course
-- [ ] Assign branch
-- [ ] Morning schedule
-- [ ] Afternoon schedule
-- [ ] Weekend schedule
-- [ ] Start date
-- [ ] End date
-- [ ] Capacity
-- [ ] Current enrollment count
-- [ ] Cohort status
-
-### Acceptance
-- [ ] Frontend branch page loads from API
-- [ ] Branch/course relationships work
-- [ ] Cohorts can be selected only for valid course/branch combinations
-- [ ] Capacity rules are enforced server-side
+### Acceptance Criteria
+- Course catalog loads dynamically from Supabase
+- Filtering by level, category, format, and search query works seamlessly
+- Multi-campus branch and cohort availability display live capacities
 
 ---
 
-# PHASE 6 — Application & Enrollment API
+# PHASE 6 — Application & Assessment Submission Flow
 
 ## Objective
-Implement the interactive multi-step `/apply` workflow.
+Wire the 6-step application wizard to Supabase with server-authoritative pricing validation.
 
-### Application Fields
+- [ ] Connect `src/pages/Apply/Apply.tsx` to Supabase:
+  - Validate selected course, branch, and cohort against database records
+  - Retrieve authoritative tuition amount directly from PostgreSQL `courses` table (never trust client-submitted price)
+  - Generate unique `application_number` (`DTA-APP-YYYY-XXXXX`)
+  - Create transaction record in `applications`, `application_assessments`, and `emergency_contacts`
+- [ ] Store draft state and support application resumption
+- [ ] Trigger CRM contact lead creation on application initiation
 
-- [ ] Program/course selection
-- [ ] Campus selection
-- [ ] Cohort selection
-- [ ] Learning mode
-- [ ] Student information
-- [ ] Background assessment
-- [ ] Emergency contact
-- [ ] Application summary
-- [ ] Pricing breakdown
-
-### Application States
-
-- [ ] Draft
-- [ ] Submitted
-- [ ] Payment Pending
-- [ ] Payment Processing
-- [ ] Paid
-- [ ] Confirmed
-- [ ] Enrolled
-- [ ] Cancelled
-
-### Application API
-
-- [ ] Create application
-- [ ] Save draft
-- [ ] Update draft
-- [ ] Submit application
-- [ ] Get application
-- [ ] List current user's applications
-- [ ] Admin application list
-- [ ] Admin application detail
-- [ ] Admin status update
-
-### Business Rules
-
-- [ ] Authenticate user before final enrollment
-- [ ] Validate active course
-- [ ] Get authoritative price from database
-- [ ] Require branch for physical learning
-- [ ] Validate cohort belongs to selected course/branch
-- [ ] Check cohort capacity
-- [ ] Prevent invalid application combinations
-- [ ] Prevent duplicate active applications where business rules disallow them
-- [ ] Generate unique application IDs
-
-### Acceptance
-- [ ] User can complete the multi-step application
-- [ ] Invalid combinations are rejected by the server
-- [ ] Application data persists in MySQL
-- [ ] Application summary matches authoritative backend values
+### Acceptance Criteria
+- Full 6-step wizard persists applications directly to Supabase
+- Pricing is guaranteed against database catalog values
+- Applications link correctly to authenticated user accounts
 
 ---
 
-# PHASE 7 — Paystack Payment Engine
+# PHASE 7 — Paystack Integration via Supabase Edge Functions
 
 ## Objective
-Implement the payment engine described in the overview.
+Implement secure server-side Paystack payment processing using Supabase Edge Functions (Deno / TypeScript).
 
-### Payment Initialization
+- [ ] Create Edge Function: `supabase/functions/initialize-payment/index.ts`
+  - Accepts `application_id` and `user_id` from authenticated client
+  - Fetches authoritative amount from `applications` and `courses`
+  - Generates unique reference format: `DTA_PAY_[TIMESTAMP]_[HEX]`
+  - Calls Paystack Initialize API (`https://api.paystack.co/transaction/initialize`) with `sk_live_...` or `sk_test_...` from Edge Function secret
+  - Creates pending `payments` row in PostgreSQL
+  - Returns `authorization_url`, `access_code`, and `reference`
+- [ ] Create Edge Function: `supabase/functions/verify-payment/index.ts`
+  - Accepts `reference`
+  - Calls Paystack Verify API (`https://api.paystack.co/transaction/verify/{reference}`)
+  - Validates amount, currency (NGN), and transaction status (`success`)
+  - Atomically updates payment record and invokes enrollment fulfillment
+- [ ] Create Edge Function: `supabase/functions/payment-webhook/index.ts`
+  - Validates Paystack HMAC SHA-512 signature (`x-paystack-signature`) against `PAYSTACK_WEBHOOK_SECRET`
+  - Implements idempotent transaction processing: deduplicates repeated webhook events
+  - On `charge.success`, fulfills enrollment and generates invoice atomically
 
-- [ ] Create payment initialization endpoint
-- [ ] Generate unique payment reference
-- [ ] Use `DTA_PAY_*` reference format
-- [ ] Load authoritative amount from application/course
-- [ ] Confirm application is payable
-- [ ] Create pending payment record
-- [ ] Initialize Paystack transaction
-- [ ] Return checkout details to frontend
-
-### Payment Verification
-
-- [ ] Create payment callback endpoint
-- [ ] Verify transaction server-side
-- [ ] Validate reference
-- [ ] Validate application
-- [ ] Validate amount
-- [ ] Validate currency
-- [ ] Update payment status
-- [ ] Record payment event
-- [ ] Trigger enrollment only after verified success
-- [ ] Make verification idempotent
-- [ ] Handle repeat callbacks safely
-
-### Payment States
-
-- [ ] Pending
-- [ ] Processing
-- [ ] Successful
-- [ ] Failed
-- [ ] Abandoned
-- [ ] Refunded
-
-### Invoice / Receipt
-
-- [ ] Create invoice record
-- [ ] Create receipt record/data
-- [ ] Store payment metadata
-- [ ] Provide receipt/invoice API
-- [ ] Provide PDF-ready receipt data/file generation path
-
-### Security
-
-- [ ] Keep Paystack secret credentials server-side
-- [ ] Sanitize payment-related payloads
-- [ ] Rate-limit payment initialization
-- [ ] Prevent duplicate charge processing
-- [ ] Avoid exposing sensitive payment data in logs
-
-### Acceptance
-- [ ] Successful payment becomes a verified backend event
-- [ ] Failed payment does not confirm enrollment
-- [ ] Repeated callbacks do not duplicate payment/enrollment records
-- [ ] Frontend cannot manipulate course price
+### Acceptance Criteria
+- Paystack secret key is NEVER exposed to the frontend
+- Payments are strictly idempotent
+- Spoofed frontend amounts are rejected by server-side verification
 
 ---
 
-# PHASE 8 — Enrollment & Student Lifecycle
+# PHASE 8 — Enrollment Lifecycle & Invoicing Engine
 
 ## Objective
-Persist verified enrollments and support the lifecycle defined in the overview.
+Create atomic enrollment fulfillment upon verified payment.
 
-### Enrollment
+- [ ] Create PostgreSQL stored procedure / function `public.fulfill_enrollment_on_payment(p_payment_reference TEXT)`:
+  - Locks payment record (`FOR UPDATE`) to prevent race conditions
+  - Verifies payment status is `paid`
+  - Checks if enrollment already exists for `application_id` (idempotency check)
+  - Creates `enrollments` record with status `enrolled` and `progress_percentage = 0`
+  - Updates `applications` status to `enrolled`
+  - Increments `cohorts.enrolled_count`
+  - Generates `invoices` record with unique invoice number (`DTA-INV-YYYY-XXXXX`)
+  - Creates welcome notification in `notifications`
+  - If referral code was attached, logs `affiliate_commissions` record
+- [ ] Update `src/pages/Payment/PaymentCallback.tsx` to call verification Edge Function and redirect to `/dashboard` upon confirmation
 
-- [ ] Create enrollment
-- [ ] Link student
-- [ ] Link application
-- [ ] Link course
-- [ ] Link payment
-- [ ] Link branch where applicable
-- [ ] Link cohort
-- [ ] Record enrollment date
-- [ ] Record start date
-- [ ] Record completion status
-
-### Lifecycle
-
-```text
-New Application
-→ Payment Pending
-→ Enrolled
-→ Active Student
-→ Alumnus
-```
-
-### Acceptance
-- [ ] One verified payment creates the correct enrollment
-- [ ] Enrollment is visible to the student
-- [ ] Enrollment is visible to authorized admin users
-- [ ] Lifecycle status can be updated according to business rules
+### Acceptance Criteria
+- Verified payments immediately create active enrollments and invoices
+- Duplicate webhook or callback triggers do NOT duplicate enrollments or invoices
+- Student dashboard immediately reflects newly enrolled courses
 
 ---
 
-# PHASE 9 — Student Dashboard API
+# PHASE 9 — Student Dashboard & LMS Learning Portal
 
 ## Objective
-Power `/dashboard` with persistent student data.
+Power the student portal and LMS with live Supabase database and storage data.
 
-### Dashboard Overview
+- [ ] Connect `src/pages/Dashboard/` overview:
+  - Fetch active enrollments, course progress, upcoming cohort schedules, and unread notifications
+- [ ] Connect `src/pages/LMS/` Classroom:
+  - Fetch curriculum modules and lessons for enrolled courses
+  - Track lesson completion with `lesson_progress` upserts
+  - Load video links, lecture notes, and downloadable assets
+- [ ] Create Supabase Storage buckets:
+  - `course-resources` (Public read for enrolled students, admin write)
+  - `assignment-submissions` (Authenticated student write, instructor read)
+  - `certificates` (Public read for verified certificates, admin write)
+  - `avatars` (Public read, authenticated user write for own profile)
+- [ ] Connect assignment submissions and instructor grading feedback
 
-- [ ] Enrollment status
-- [ ] Upcoming classes
-- [ ] Attendance metrics
-- [ ] Quick links
-- [ ] Active courses
-- [ ] Applications
-- [ ] Payments
-- [ ] Notifications
-- [ ] Learning progress
-
-### My Courses
-
-- [ ] List enrolled courses
-- [ ] Progress
-- [ ] Instructor
-- [ ] Schedule
-- [ ] Learning mode
-- [ ] Start date
-- [ ] Status
-
-### Applications
-
-- [ ] Application history
-- [ ] Application status
-- [ ] Course
-- [ ] Branch
-- [ ] Cohort
-- [ ] Payment state
-
-### Payments
-
-- [ ] Transaction history
-- [ ] Amount
-- [ ] Currency
-- [ ] Date
-- [ ] Reference
-- [ ] Status
-- [ ] Invoice/receipt access
-
-### Acceptance
-- [ ] Dashboard data comes from backend
-- [ ] Student sees only their own private data
-- [ ] Refreshing does not lose server-backed data
+### Acceptance Criteria
+- Students can only access LMS modules for courses they have active enrollments in
+- Lesson progress is saved in real-time to PostgreSQL
+- File uploads for assignments persist securely in Supabase Storage
 
 ---
 
-# PHASE 10 — LMS / Learning Portal
+# PHASE 10 — Certificates, Attendance & Instructor Portals
 
 ## Objective
-Implement `/learn` backend support exactly for the learning features defined in the overview.
+Implement cryptographic certificate verification, attendance tracking, and instructor dashboards.
 
-### Learning Structure
+- [ ] Certificate Generation:
+  - Generate certificate record upon course completion (100% lessons + passing assignment scores)
+  - Unique verification code format: `DTA-CERT-[YEAR]-[RANDOM]`
+- [ ] Public Certificate Verification Route (`/verify/:certId`):
+  - Queries `certificates` joined with `courses` and `profiles`
+  - Publicly displays student name, course title, completion date, and credential status without exposing private student email or phone
+- [ ] Attendance Tracking:
+  - Instructors mark attendance for cohort sessions
+  - Calculates attendance percentage dynamically on student dashboard
+- [ ] Instructor Portal:
+  - View assigned cohorts, student submissions, and submit feedback with score grades
 
-- [ ] Course modules
-- [ ] Lessons
-- [ ] Weekly objectives
-- [ ] Video lecture metadata/integration
-- [ ] Markdown lecture notes
-- [ ] Downloadable toolkits
-- [ ] Code sandbox metadata/configuration
-- [ ] Lesson completion
-- [ ] Course progress
-
-### Assignments
-
-- [ ] Create assignment
-- [ ] Assign assignment to course/module
-- [ ] Submit assignment
-- [ ] Store submission
-- [ ] Track submission status
-- [ ] Instructor feedback
-- [ ] Grading fields where applicable
-
-### Access Control
-
-- [ ] Enrolled students can access their enrolled course content
-- [ ] Students cannot access another student's private submission data
-- [ ] Instructors can access assigned course content
-- [ ] Admins can manage learning content
-
-### Acceptance
-- [ ] `/learn` loads database-backed course content
-- [ ] Student progress persists
-- [ ] Assignment submissions persist
-- [ ] Instructor feedback is visible to the correct student
+### Acceptance Criteria
+- Public certificate verification works for valid certificates and returns 404 for invalid codes
+- Only instructors and admins can grade submissions and take attendance
 
 ---
 
-# PHASE 11 — Instructor & Mentor Backend
+# PHASE 11 — Affiliate / Referral Tracking Engine
 
 ## Objective
-Support instructor-facing data and workflows.
+Implement database-backed referral tracking, qualification, and commission accounting.
 
-### Instructor Profile
+- [ ] Create `affiliate_profiles` for registered users with unique referral codes
+- [ ] Connect referral landing links (`/apply?ref=CODE`) to capture affiliate tracking in session/cookies
+- [ ] On application submission, link `referrals.affiliate_id`
+- [ ] On successful payment verification, calculate commission (e.g., 10%) and insert `affiliate_commissions` record
+- [ ] Prevent self-referrals (`affiliate.user_id != applicant.user_id`)
+- [ ] Connect Affiliate Dashboard (`/dashboard/referrals`) to display total referrals, conversion rate, and commission payouts
 
-- [ ] Profile
-- [ ] Credentials
-- [ ] Expertise
-- [ ] Experience
-- [ ] Assigned courses
-
-### Instructor Functions
-
-- [ ] View assigned courses
-- [ ] View enrolled students
-- [ ] View assignments
-- [ ] Review submissions
-- [ ] Provide feedback
-- [ ] Manage authorized curriculum content
-- [ ] Record attendance where authorized
-
-### Acceptance
-- [ ] Instructor access is restricted to authorized content
-- [ ] Instructor-course relationships are persisted
-- [ ] Feedback is linked to the correct submission/student
+### Acceptance Criteria
+- Referral tracking persists across application and checkout flows
+- Commissions are credited only on verified enrollments
+- Self-referrals are rejected by database constraints and Edge Function logic
 
 ---
 
-# PHASE 12 — Attendance Backend
+# PHASE 12 — CRM, Notifications & Admin Management Hubs
 
 ## Objective
-Support attendance tracking and dashboard attendance metrics.
+Wire the comprehensive admin management portals and CRM communications to Supabase.
 
-- [ ] Create class-session model
-- [ ] Assign sessions to cohorts
-- [ ] Record attendance
-- [ ] Update attendance
-- [ ] View attendance history
-- [ ] Calculate attendance percentage
-- [ ] Student attendance endpoint
-- [ ] Instructor attendance endpoint
-- [ ] Admin attendance endpoint
-- [ ] Enforce authorization
+- [ ] **Admin Course Management (`/admin/courses`):** Create, edit, toggle visibility, update pricing and curriculum modules
+- [ ] **Admin Student & Application Management (`/admin/students`, `/admin/applications`):** Filter by status, campus branch, payment state, export data
+- [ ] **Admin Hubs & Cohorts (`/admin/hubs`):** Manage branch details, cohort capacities, and active schedules
+- [ ] **CRM Contacts & Broadcasts (`/admin/crm`):** View leads captured from contact forms, WhatsApp clicks, and unfinished applications; record communication logs
+- [ ] **In-App Notifications:** Real-time notification feed for students (application updates, payment receipts, class announcements)
+
+### Acceptance Criteria
+- All admin portals enforce `is_admin()` server-side via PostgreSQL RLS
+- CRUD actions persist reliably to Supabase database
+- Leads and communications logged for CRM visibility
 
 ---
 
-# PHASE 13 — Certificate & Verification Backend
+# PHASE 13 — Analytics Telemetry Layer
 
 ## Objective
-Implement the graduation and verified-certification flow.
+Implement a privacy-respecting analytics event telemetry pipeline in Supabase.
 
-### Certificates
+- [ ] Create `src/services/analytics.ts` Supabase telemetry sink:
+  - Track course views, catalog search/filters, application step progress, payment initiations, checkout completions, LMS engagement
+- [ ] Provide aggregated query views for the Admin Analytics Dashboard (`/admin/analytics`):
+  - Daily/weekly application conversion rates
+  - Revenue breakdown by course and campus branch
+  - Student learning retention and completion metrics
 
-- [ ] Define certificate eligibility rules
-- [ ] Generate unique certificate ID
-- [ ] Link certificate to student
-- [ ] Link certificate to course
-- [ ] Record issue date
-- [ ] Record completion status
-- [ ] Record certificate status
-
-### Verification
-
-- [ ] Create `/verify/:certId` API
-- [ ] Public certificate verification endpoint
-- [ ] Return verification status
-- [ ] Support QR-compatible verification URL
-- [ ] Prevent unauthorized certificate changes
-
-### Student
-
-- [ ] View earned certificates
-- [ ] View verification link
-- [ ] Access certificate data
-
-### Acceptance
-- [ ] Valid certificate can be publicly verified
-- [ ] Invalid/nonexistent certificate is clearly reported
-- [ ] Student certificate access is restricted appropriately
+### Acceptance Criteria
+- Telemetry events stream asynchronously to `analytics_events` table without blocking UI thread
+- Admin analytics dashboard renders live metrics from PostgreSQL aggregations
 
 ---
 
-# PHASE 14 — Affiliate / Referral Backend
+# PHASE 14 — Security Hardening, RLS Audit & Cleanup
 
 ## Objective
-Implement `/affiliate` functionality from the overview.
-
-### Affiliate Profile
-
-- [ ] Create affiliate profile
-- [ ] Generate unique referral code
-- [ ] Generate referral URL
-- [ ] Track referred visitors
-- [ ] Track referred applications
-- [ ] Track qualifying enrollments
-- [ ] Calculate commissions
-- [ ] Track commission status
-
-### Affiliate Dashboard
-
-- [ ] Referral count
-- [ ] Conversion count
-- [ ] Commission totals
-- [ ] Referral history
-- [ ] Promotional asset metadata
-
-### Protection
-
-- [ ] Prevent self-referral
-- [ ] Prevent duplicate commissions
-- [ ] Define qualifying event before commission creation
-- [ ] Protect affiliate records
-
----
-
-# PHASE 15 — Notifications & Automated Communication
-
-## Objective
-Implement the automated communication requirements in the overview.
-
-### Notification Types
-
-- [ ] Welcome onboarding
-- [ ] Application submission
-- [ ] Payment confirmation
-- [ ] Cohort kickoff reminder
-- [ ] Class reminder
-- [ ] Schedule change
-- [ ] Assignment feedback
-- [ ] Certificate availability
-- [ ] Academy announcements
-
-### In-App Notifications
-
-- [ ] Create notification record
-- [ ] Read/unread state
-- [ ] Notification list endpoint
-- [ ] Mark as read endpoint
-- [ ] Notification preferences where required
-
-### Email/Communication Layer
-
-- [ ] Create email service abstraction
-- [ ] Create communication templates
-- [ ] Log communications
-- [ ] Support course-specific communication
-- [ ] Support branch-specific communication
-- [ ] Support application-status communication
-
-### CRM Segments
-
-- [ ] New leads
-- [ ] Course-interest leads
-- [ ] Payment-pending applicants
-- [ ] Enrolled students
-- [ ] Active students
-- [ ] Alumni
-- [ ] Branch-specific audiences
-- [ ] Course-specific audiences
-
----
-
-# PHASE 16 — Admin Dashboard Backend
-
-## Objective
-Power `/admin` with authoritative backend data.
-
-### Executive Analytics
-
-- [ ] Gross revenue
-- [ ] Active cohort enrollment
-- [ ] Application conversion ratio
-- [ ] Popular tech tracks
-- [ ] Recent applications
-- [ ] Enrollment trends
-- [ ] Branch enrollment
-- [ ] Cohort capacity/utilization
-
-### Course & Curriculum Management
-
-- [ ] Course CRUD
-- [ ] Category CRUD
-- [ ] Curriculum management
-- [ ] Pricing management
-- [ ] Instructor assignment
-- [ ] Course activation/deactivation
-
-### Student & Application CRM
-
-- [ ] Student list
-- [ ] Search
-- [ ] Filtering
-- [ ] Student detail
-- [ ] Application pipeline
-- [ ] Payment status
-- [ ] Enrollment status
-- [ ] Bulk communication support
-
-### Campus Logistics
-
-- [ ] Branch management
-- [ ] Branch capacity
-- [ ] Cohort timings
-- [ ] Course availability
-- [ ] Workstation/seat availability where required
-
----
-
-# PHASE 17 — Analytics Backend
-
-## Objective
-Create the event and reporting system required for product and growth visibility.
-
-### Track Events
-
-- [ ] Page view
-- [ ] Course view
-- [ ] Course search
-- [ ] Course filter
-- [ ] Apply click
-- [ ] Signup started
-- [ ] Signup completed
-- [ ] Application started
-- [ ] Application submitted
-- [ ] Payment started
-- [ ] Payment successful
-- [ ] Payment failed
-- [ ] Enrollment created
-- [ ] Lesson completed
-- [ ] Assignment submitted
-- [ ] Certificate issued
-
-### Reports
-
-- [ ] Popular courses
-- [ ] Application funnel
-- [ ] Payment totals
-- [ ] Enrollment trends
-- [ ] Branch performance
-- [ ] Cohort utilization
-- [ ] Student lifecycle counts
-
----
-
-# PHASE 18 — Replace Frontend Mock Persistence
-
-## Objective
-Move the completed frontend from temporary/mock data to PHP/MySQL-backed data.
-
-- [ ] Replace LocalStorage course source with API
-- [ ] Replace LocalStorage user state with backend authentication state
-- [ ] Replace mock applications with database records
-- [ ] Replace mock payment state with backend payment records
-- [ ] Replace mock dashboard data with API data
-- [ ] Replace mock admin data with API data
-- [ ] Remove obsolete mock persistence where no longer needed
-- [ ] Keep appropriate browser-only preferences such as theme locally
-- [ ] Confirm no sensitive information is unnecessarily stored in browser storage
-
-### Acceptance
-- [ ] Data persists after refresh
-- [ ] Same account works across devices
-- [ ] Admin changes propagate to the frontend
-- [ ] Backend is the source of truth for important records
-
----
-
-# PHASE 19 — Security Hardening
-
-## Objective
-Secure the PHP/MySQL system before production.
-
-### API Security
-
-- [ ] HTTPS in production
-- [ ] Authentication middleware
-- [ ] Role authorization
-- [ ] Server-side validation
-- [ ] Prepared SQL statements
-- [ ] Output handling
-- [ ] CORS restrictions
-- [ ] Rate limiting
-- [ ] Request-size limits
-- [ ] Secure file handling
-- [ ] Security logging
-
-### Database Security
-
-- [ ] Least-privilege DB account
-- [ ] Environment-based database credentials
-- [ ] No secrets committed to source control
-- [ ] Database backup strategy
-- [ ] Restore test
-- [ ] Production database access restrictions
-
-### Payment Security
-
-- [ ] Server-side course price lookup
-- [ ] Server-side Paystack verification
-- [ ] Idempotency protection
-- [ ] Duplicate callback protection
-- [ ] Secure callback/webhook handling where applicable
-- [ ] No secret Paystack credentials in React
-
-### Authentication Security
-
-- [ ] Secure password hashing
-- [ ] Session/token expiry
-- [ ] Secure cookies where applicable
-- [ ] Password reset safeguards
-- [ ] Brute-force protection
-
----
-
-# PHASE 20 — API Documentation
-
-## Objective
-Document the backend so the existing frontend and future developers can integrate reliably.
-
-- [ ] Document auth endpoints
-- [ ] Document course endpoints
-- [ ] Document branch endpoints
-- [ ] Document cohort endpoints
-- [ ] Document application endpoints
-- [ ] Document payment endpoints
-- [ ] Document enrollment endpoints
-- [ ] Document dashboard endpoints
-- [ ] Document LMS endpoints
-- [ ] Document instructor endpoints
-- [ ] Document attendance endpoints
-- [ ] Document certificate endpoints
-- [ ] Document affiliate endpoints
-- [ ] Document notification endpoints
-- [ ] Document admin endpoints
-- [ ] Document analytics endpoints
-- [ ] Document authentication requirements
-- [ ] Document request/response examples
-- [ ] Document error responses
-- [ ] Document HTTP status usage
-
----
-
-# PHASE 21 — Automated Testing
-
-## Unit Tests
-
-- [ ] Validation
-- [ ] Authentication logic
-- [ ] Authorization logic
-- [ ] Course pricing logic
-- [ ] Application state logic
-- [ ] Enrollment logic
-- [ ] Payment state logic
-- [ ] Certificate eligibility
-- [ ] Affiliate commission logic
-
-## Integration Tests
-
-- [ ] Auth + MySQL
-- [ ] Course API + MySQL
-- [ ] Branch/cohort API + MySQL
-- [ ] Application + MySQL
-- [ ] Paystack flow
-- [ ] Enrollment flow
-- [ ] Student dashboard API
-- [ ] LMS API
-- [ ] Certificate verification
-- [ ] Admin APIs
-
-## Security Tests
-
-- [ ] Unauthorized endpoint access
-- [ ] Role bypass attempts
-- [ ] Invalid IDs
-- [ ] SQL injection protection
-- [ ] XSS input handling
-- [ ] Rate limiting
-- [ ] Duplicate payment callbacks
-- [ ] Privilege escalation attempts
-
----
-
-# PHASE 22 — End-to-End Testing
-
-## Student Flow
-
-- [ ] Browse courses
-- [ ] Search/filter courses
-- [ ] Open course details
-- [ ] Create account
-- [ ] Submit application
-- [ ] Select learning mode
-- [ ] Select branch
-- [ ] Select cohort
-- [ ] Review application
-- [ ] Pay through Paystack
-- [ ] Verify payment
-- [ ] Confirm enrollment
-- [ ] Open dashboard
-- [ ] Access learning portal
-- [ ] Track progress
-- [ ] Submit assignment
-- [ ] View feedback
-- [ ] Access certificate after eligibility
-
-## Instructor Flow
-
-- [ ] Login
-- [ ] View assigned courses
-- [ ] View students
-- [ ] View assignments
-- [ ] Review submissions
-- [ ] Give feedback
-- [ ] Record attendance
-
-## Admin Flow
-
-- [ ] Login
-- [ ] View analytics
-- [ ] View applications
-- [ ] View payments
-- [ ] View students
-- [ ] Manage courses
-- [ ] Manage curriculum
-- [ ] Manage branches
-- [ ] Manage cohorts
-- [ ] Manage instructors
-- [ ] Manage communications
-- [ ] Manage certificates
-
----
-
-# PHASE 23 — Performance & Scalability
-
-- [ ] Add appropriate database indexes
-- [ ] Optimize heavy queries
-- [ ] Add pagination to large datasets
-- [ ] Prevent unnecessary repeated queries
-- [ ] Optimize course/catalog API responses
-- [ ] Optimize admin analytics queries
-- [ ] Add appropriate caching
-- [ ] Add rate limiting
-- [ ] Monitor API response time
-- [ ] Load-test critical endpoints
-- [ ] Load-test course catalog
-- [ ] Load-test application endpoints
-- [ ] Load-test payment initialization
-- [ ] Review database growth expectations
-
----
-
-# PHASE 24 — Production Deployment
-
-## PHP Server
-
-- [ ] Choose production PHP hosting
-- [ ] Configure supported PHP runtime
-- [ ] Configure web server
-- [ ] Configure HTTPS
-- [ ] Configure environment variables
-- [ ] Configure API domain/subdomain if needed
-- [ ] Configure production logs
-- [ ] Configure error monitoring
-
-## MySQL
-
-- [ ] Create production database
-- [ ] Create restricted database user
-- [ ] Run migrations
-- [ ] Load approved production data
-- [ ] Configure backups
-- [ ] Test restore
-
-## Frontend Integration
-
-- [ ] Set production API URL
-- [ ] Configure CORS
-- [ ] Configure production Paystack settings
-- [ ] Configure payment callback URL
-- [ ] Test authenticated API requests
-- [ ] Test dashboard data
-- [ ] Test admin requests
-
----
-
-# PHASE 25 — Production Data & Business Validation
-
-- [ ] Confirm final course list
-- [ ] Confirm final course prices
-- [ ] Confirm course descriptions
-- [ ] Confirm course durations
-- [ ] Confirm learning modes
-- [ ] Confirm branch information
-- [ ] Confirm branch amenities
-- [ ] Confirm cohort schedules
-- [ ] Confirm instructor data
-- [ ] Confirm Paystack configuration
-- [ ] Confirm refund/cancellation policy
-- [ ] Confirm communication templates
-- [ ] Confirm certificate rules
-- [ ] Confirm affiliate rules
-
-> Do not publish unconfirmed business information just because it exists in development seed data.
-
----
-
-# PHASE 26 — Final Production Release Gate
-
-The backend is ready for production only when:
-
-- [ ] Authentication is secure
-- [ ] Authorization is enforced
-- [ ] Courses are database-backed
-- [ ] Course details are database-backed
-- [ ] Branches are database-backed
-- [ ] Cohorts are database-backed
-- [ ] Applications persist in MySQL
-- [ ] Payments persist in MySQL
-- [ ] Paystack verification is server-side
-- [ ] Enrollment follows verified payment
-- [ ] Student dashboard is database-backed
-- [ ] LMS content persists
-- [ ] Assignments persist
-- [ ] Attendance persists
-- [ ] Certificates can be issued/verified
-- [ ] Affiliate/referral data persists
-- [ ] Notifications work
-- [ ] Admin dashboard uses live data
-- [ ] Analytics work
-- [ ] CRM/communication data is queryable
-- [ ] Security checks pass
-- [ ] Automated tests pass
-- [ ] End-to-end tests pass
-- [ ] Performance checks pass
-- [ ] Backups are working
-- [ ] API documentation is complete
-- [ ] Frontend-to-backend integration passes
-
----
-
-# Recommended Build Sequence
-
-```text
-Phase 0  → Backend readiness / API contract
-Phase 1  → PHP foundation
-Phase 2  → MySQL architecture
-Phase 3  → Authentication & authorization
-Phase 4  → Courses / catalog
-Phase 5  → Branches / cohorts
-Phase 6  → Applications
-Phase 7  → Paystack
-Phase 8  → Enrollment
-Phase 9  → Student dashboard
-Phase 10 → LMS
-Phase 11 → Instructor backend
-Phase 12 → Attendance
-Phase 13 → Certificates
-Phase 14 → Affiliate / referral
-Phase 15 → Notifications / CRM
-Phase 16 → Admin backend
-Phase 17 → Analytics
-Phase 18 → Frontend data migration
-Phase 19 → Security hardening
-Phase 20 → API documentation
-Phase 21 → Automated tests
-Phase 22 → End-to-end tests
-Phase 23 → Performance / scalability
-Phase 24 → Deployment
-Phase 25 → Production data validation
-Phase 26 → Production release gate
-```
-
----
-
-# Critical Rules
-
-- [ ] Do not redesign the completed frontend while implementing the backend
-- [ ] Do not treat LocalStorage as the source of truth for users, applications, enrollments, payments or other important persistent records after migration
-- [ ] Do not trust prices sent by the frontend
-- [ ] Verify Paystack transactions server-side
-- [ ] Make payment processing idempotent
-- [ ] Never expose Paystack secret credentials in frontend code
-- [ ] Never store plain-text passwords
-- [ ] Never trust role/permission claims supplied by the browser
-- [ ] Students must only access their own private records
-- [ ] Admin privileges must be enforced server-side
-- [ ] Validate business rules on the server
-- [ ] Use database transactions for payment-to-enrollment operations
-- [ ] Preserve financial/enrollment history appropriately
-- [ ] Do not invent academy facts, course prices, branch amenities, schedules or statistics
-- [ ] Do not mark an enrollment successful solely because the frontend reaches a success screen
-- [ ] Keep the backend as the source of truth for critical business data
-
----
-
-# Final Backend Target
-
-The completed system should operate as:
-
-```text
-                 DAVE TECHS FRONTEND
-                   React + TypeScript
-                           │
-                           │ REST API
-                           ▼
-                    PHP BACKEND
-                           │
-             ┌─────────────┴─────────────┐
-             ▼                           ▼
-          MySQL                       Paystack
-        Database                       Gateway
-```
-
-Supporting the complete product lifecycle:
-
-```text
-Visitor
-   ↓
-Course Discovery
-   ↓
-Account / Authentication
-   ↓
-Application
-   ↓
-Branch / Cohort Selection
-   ↓
-Paystack Payment
-   ↓
-Verified Enrollment
-   ↓
-Student Dashboard
-   ↓
-Learning Portal
-   ↓
-Assignments / Attendance / Progress
-   ↓
-Graduation
-   ↓
-Certificate Verification
-```
-
-and the administrative lifecycle:
-
-```text
-Admin
- ↓
-Courses
- ↓
-Curriculum
- ↓
-Students
- ↓
-Applications
- ↓
-Payments
- ↓
-Enrollments
- ↓
-Branches / Cohorts
- ↓
-Communications / CRM
- ↓
-Analytics
-```
-
-## Definition of Done
-
-The backend phase is complete when the already-built Dave Techs frontend can function as a real, persistent application through the PHP REST API and MySQL database, while Paystack handles the payment flow and the documented student, instructor, certificate, affiliate and admin capabilities are securely supported.
+Audit the entire system for zero secret leaks, airtight RLS policies, and remove all obsolete legacy backend artifacts.
+
+- [ ] Complete RLS audit across all 11 table domains
+- [ ] Verify Storage bucket security policies
+- [ ] Verify zero occurrences of `SUPABASE_SERVICE_ROLE_KEY` or Paystack Secret Key in frontend code
+- [ ] Clean up and delete obsolete legacy `backend/` scaffolding (PHP/PDO files)
+- [ ] Update documentation files (`docs/api_contract.md`, `README.md`, `.env.example`, `docs/deployment.md`)
+
+### Acceptance Criteria
+- All tests passing cleanly (`npm test`)
+- TypeScript compiles without errors (`npx tsc --noEmit`)
+- Single unified backend architecture: **Supabase + Paystack**

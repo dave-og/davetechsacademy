@@ -12,6 +12,7 @@ import { formatPrice } from "../../utils";
 import { Button } from "../../components/ui/Button";
 import { Badge } from "../../components/ui/Badge";
 import { PaystackModal } from "../../components/common/PaystackModal";
+import { GoogleAuthButton } from "../../components/common/GoogleAuthButton";
 import type { Course, LearningMode, Branch, Application } from "../../types";
 import "./Apply.css";
 
@@ -73,6 +74,42 @@ export const Apply: React.FC = () => {
 
   // Learning Mode State
   const [learningMode, setLearningMode] = useState<LearningMode>("online");
+  const [physicalLocationInput, setPhysicalLocationInput] = useState<string>("");
+  const [physicalLocationError, setPhysicalLocationError] = useState<string | null>(null);
+  const [branchMatchNote, setBranchMatchNote] = useState<string | null>(null);
+
+  const adminWhatsAppUrl = `https://wa.me/2349070925508?text=${encodeURIComponent(
+    "Hello Dave Techs Admin, I am interested in attending physical classes at Dave Techs. Please help me locate the nearest branch to my area and provide information about available courses and enrollment."
+  )}`;
+
+  const handleFindNearestBranch = () => {
+    const loc = physicalLocationInput.trim();
+    if (!loc) {
+      setPhysicalLocationError("Please enter your city or area (e.g., Ikeja, Lagos)");
+      return;
+    }
+
+    setPhysicalLocationError(null);
+
+    // Check if location matches known branches
+    const locLower = loc.toLowerCase();
+    const matched = branches.find(
+      (b) =>
+        b.location.toLowerCase().includes(locLower) ||
+        b.name.toLowerCase().includes(locLower) ||
+        b.address.toLowerCase().includes(locLower)
+    );
+
+    if (matched) {
+      setBranchMatchNote(`Nearest Verified Campus: ${matched.name} (${matched.location})`);
+    } else {
+      setBranchMatchNote(null);
+    }
+
+    const prefilledText = `Hello Dave Techs Admin, I am interested in attending physical classes at Dave Techs. My location is ${loc}. Please help me locate the nearest branch to my area and provide information about available courses and enrollment.`;
+    const targetUrl = `https://wa.me/2349070925508?text=${encodeURIComponent(prefilledText)}`;
+    window.open(targetUrl, "_blank", "noopener,noreferrer");
+  };
 
   // Branch & Cohort State
   const availableBranches = getBranchesForCourse(selectedCourse.id);
@@ -272,22 +309,38 @@ export const Apply: React.FC = () => {
     // Trigger CRM & Notification for Application Received
     triggerApplicationReceived(newApp);
 
-    const ref = generatePaymentReference(newApp.applicationNumber);
-    setPaymentReference(ref);
+    if (newApp.learningMode === "online") {
+      const ref = generatePaymentReference(newApp.applicationNumber);
+      setPaymentReference(ref);
 
-    // Telemetry Analytics
-    trackApplicationComplete(
-      newApp.id,
-      newApp.applicationNumber,
-      newApp.courseId,
-      newApp.tuitionAmount,
-      newApp.cohort
-    );
-    trackPaymentStart(newApp.id, ref, newApp.tuitionAmount, newApp.courseTitle);
+      // Telemetry Analytics for Online Paid Flow
+      trackApplicationComplete(
+        newApp.id,
+        newApp.applicationNumber,
+        newApp.courseId,
+        newApp.tuitionAmount,
+        newApp.cohort
+      );
+      trackPaymentStart(newApp.id, ref, newApp.tuitionAmount, newApp.courseTitle);
 
-    setIsCompleted(true);
-    setIsSubmitting(false);
-    setShowPaystackModal(true);
+      setIsCompleted(true);
+      setIsSubmitting(false);
+      setShowPaystackModal(true);
+    } else {
+      // Telemetry Analytics for Physical Consultation Flow (No Online Payment Required)
+      trackApplicationComplete(
+        newApp.id,
+        newApp.applicationNumber,
+        newApp.courseId,
+        newApp.tuitionAmount,
+        newApp.cohort
+      );
+
+      setIsCompleted(true);
+      setIsSubmitting(false);
+      setShowPaystackModal(false);
+    }
+
     window.scrollTo({ top: 120, behavior: "smooth" });
   };
 
@@ -332,12 +385,24 @@ export const Apply: React.FC = () => {
         {/* ─── Confirmation Screen (When Application Created) ── */}
         {isCompleted && createdApplication ? (
           <div className="apply-card confirmation-card">
-            <div className="confirmation-card__icon">🎉</div>
+            <div className="confirmation-card__icon">
+              {createdApplication.learningMode === "physical" ? "🏫" : "🎉"}
+            </div>
             <h2 className="section__title">
-              Application <span className="text-gold">Submitted Successfully!</span>
+              {createdApplication.learningMode === "physical" ? (
+                <>
+                  Physical Class Registration <span className="text-gold">Received!</span>
+                </>
+              ) : (
+                <>
+                  Application <span className="text-gold">Submitted Successfully!</span>
+                </>
+              )}
             </h2>
             <p className="section__subtitle" style={{ marginBottom: "var(--sp-6)" }}>
-              Your application has been registered. Please complete your tuition payment with Paystack to finalize your admission.
+              {createdApplication.learningMode === "physical"
+                ? "Your registration details have been saved. No online payment is required. Please contact our admin to confirm the nearest branch, available courses, schedule, and finalize your enrollment."
+                : "Your application has been registered. Please complete your tuition payment with Paystack to finalize your admission."}
             </p>
 
             <div className="confirmation-card__badge">
@@ -355,7 +420,11 @@ export const Apply: React.FC = () => {
               </div>
               <div className="confirmation-detail-item">
                 <label>Learning Mode</label>
-                <span>{createdApplication.learningMode === "online" ? "🌐 Online Live Training" : "🏫 Hands-on Physical"}</span>
+                <span>
+                  {createdApplication.learningMode === "online"
+                    ? "🌐 Online Live Training"
+                    : "🏫 Hands-on Physical Classes (No Online Payment Required)"}
+                </span>
               </div>
               {createdApplication.branchName && (
                 <div className="confirmation-detail-item">
@@ -368,39 +437,110 @@ export const Apply: React.FC = () => {
                 <span>{createdApplication.cohort}</span>
               </div>
               <div className="confirmation-detail-item">
-                <label>Total Tuition</label>
+                <label>Tuition Fee</label>
                 <span className="text-gold" style={{ fontSize: "var(--fs-lg)" }}>
                   {formatPrice(createdApplication.tuitionAmount)}
                 </span>
               </div>
               <div className="confirmation-detail-item">
                 <label>Payment Status</label>
-                <span style={{ color: "var(--warning)", fontWeight: "bold" }}>Pending Paystack Payment</span>
+                {createdApplication.learningMode === "physical" ? (
+                  <span style={{ color: "#34d399", fontWeight: "bold" }}>
+                    No Online Payment Required (Pay On-Site)
+                  </span>
+                ) : (
+                  <span style={{ color: "var(--warning)", fontWeight: "bold" }}>
+                    Pending Paystack Payment
+                  </span>
+                )}
               </div>
               <div className="confirmation-detail-item">
                 <label>Next Step</label>
-                <span>Complete Tuition Payment via Paystack</span>
+                <span>
+                  {createdApplication.learningMode === "physical"
+                    ? "Contact Admin to confirm branch and visit"
+                    : "Complete Tuition Payment via Paystack"}
+                </span>
               </div>
             </div>
 
-            <div style={{ display: "flex", gap: "var(--sp-4)", justifyContent: "center", flexWrap: "wrap" }}>
-              <Button
-                variant="primary"
-                size="lg"
-                onClick={() => {
-                  const ref = paymentReference || generatePaymentReference(createdApplication.applicationNumber);
-                  setPaymentReference(ref);
-                  setShowPaystackModal(true);
-                }}
-              >
-                💳 Pay {formatPrice(createdApplication.tuitionAmount)} via Paystack →
-              </Button>
-              <Link to="/dashboard">
-                <Button variant="secondary" size="lg">
-                  Go to Dashboard
+            {/* If Physical, display the full contact suite prominently */}
+            {createdApplication.learningMode === "physical" ? (
+              <div className="confirmation-physical-actions">
+                <div className="confirmation-contact-box">
+                  <h3 style={{ color: "var(--gold)", marginBottom: "var(--sp-2)", fontSize: "var(--fs-base)" }}>
+                    Admin Enrollment & Branch Contacts
+                  </h3>
+                  <p style={{ fontSize: "var(--fs-sm)", color: "var(--text-secondary)", marginBottom: "var(--sp-4)" }}>
+                    Reach out to our admissions team directly with your Application ID <strong>{createdApplication.applicationNumber}</strong> to confirm your nearest branch and start date:
+                  </p>
+                  <div style={{ display: "flex", gap: "var(--sp-3)", flexWrap: "wrap", justifyContent: "center" }}>
+                    <a
+                      href={`https://wa.me/2349070925508?text=${encodeURIComponent(
+                        `Hello Dave Techs Admin, I have submitted my physical class registration (ID: ${createdApplication.applicationNumber}) for ${createdApplication.courseTitle}. Please help me confirm the nearest branch and enrollment arrangements.`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="apply-contact-btn apply-contact-btn--whatsapp"
+                      style={{ minWidth: "260px" }}
+                    >
+                      <span>💬</span>
+                      <span>Chat on WhatsApp: 09070925508</span>
+                    </a>
+
+                    <a
+                      href="tel:+2349070925508"
+                      className="apply-contact-btn apply-contact-btn--call"
+                      style={{ minWidth: "220px" }}
+                    >
+                      <span>📞</span>
+                      <span>Call Admin: 09070925508</span>
+                    </a>
+
+                    <a
+                      href="tel:+2348110913672"
+                      className="apply-contact-btn apply-contact-btn--call"
+                      style={{ minWidth: "220px" }}
+                    >
+                      <span>📞</span>
+                      <span>Alt Call: 08110913672</span>
+                    </a>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: "var(--sp-4)", justifyContent: "center", marginTop: "var(--sp-6)", flexWrap: "wrap" }}>
+                  <Link to="/dashboard">
+                    <Button variant="secondary" size="lg">
+                      View in Dashboard →
+                    </Button>
+                  </Link>
+                  <Link to="/branches">
+                    <Button variant="ghost" size="lg">
+                      Explore All Campuses 🏢
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div style={{ display: "flex", gap: "var(--sp-4)", justifyContent: "center", flexWrap: "wrap" }}>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  onClick={() => {
+                    const ref = paymentReference || generatePaymentReference(createdApplication.applicationNumber);
+                    setPaymentReference(ref);
+                    setShowPaystackModal(true);
+                  }}
+                >
+                  💳 Pay {formatPrice(createdApplication.tuitionAmount)} via Paystack →
                 </Button>
-              </Link>
-            </div>
+                <Link to="/dashboard">
+                  <Button variant="secondary" size="lg">
+                    Go to Dashboard
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         ) : (
           /* ─── Multi-step Wizard ───────────────────────────── */
@@ -522,6 +662,15 @@ export const Apply: React.FC = () => {
                         <span>⚠️ {authError}</span>
                       </div>
                     )}
+
+                    <GoogleAuthButton
+                      label={authTab === "signup" ? "Quick Sign Up with Google" : "Quick Sign In with Google"}
+                      onError={(err) => setAuthError(err)}
+                    />
+
+                    <div className="auth-divider">
+                      <span>or continue with email</span>
+                    </div>
 
                     {authTab === "signup" ? (
                       <form onSubmit={handleInlineSignup} className="auth-form">
@@ -739,12 +888,27 @@ export const Apply: React.FC = () => {
                 </div>
 
                 <div className="learning-mode-grid">
-                  {/* Option A: Online */}
+                  {/* Option A: Online Live Training — Payment Required */}
                   <div
                     className={`learning-mode-card ${learningMode === "online" ? "learning-mode-card--selected" : ""}`}
                     onClick={() => setLearningMode("online")}
+                    role="button"
+                    tabIndex={0}
+                    aria-pressed={learningMode === "online"}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setLearningMode("online");
+                      }
+                    }}
                   >
-                    <div className="learning-mode-card__icon">🌐</div>
+                    <div className="learning-mode-card__header">
+                      <div className="learning-mode-card__icon">🌐</div>
+                      <span className="learning-mode-badge learning-mode-badge--online">
+                        Payment Required
+                      </span>
+                    </div>
+
                     <h3 className="learning-mode-card__title">Online Live Training</h3>
                     <p className="learning-mode-card__desc">
                       Ideal for learners studying remotely from anywhere in Nigeria or worldwide.
@@ -755,24 +919,139 @@ export const Apply: React.FC = () => {
                       <li>✓ Dedicated 24/7 mentor Discord / Slack channel</li>
                       <li>✓ Weekly 1-on-1 code critiques & project milestones</li>
                     </ul>
+
+                    <div className="learning-mode-note learning-mode-note--online">
+                      💳 <strong>Online Enrollment & Payment:</strong> Online students are required to complete applicable course payment via Paystack before their enrollment is confirmed.
+                    </div>
                   </div>
 
-                  {/* Option B: Physical */}
+                  {/* Option B: Hands-on Physical Classes — No Online Payment Required */}
                   <div
                     className={`learning-mode-card ${learningMode === "physical" ? "learning-mode-card--selected" : ""}`}
                     onClick={() => setLearningMode("physical")}
+                    role="button"
+                    tabIndex={0}
+                    aria-pressed={learningMode === "physical"}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setLearningMode("physical");
+                      }
+                    }}
                   >
-                    <div className="learning-mode-card__icon">🏫</div>
+                    <div className="learning-mode-card__header">
+                      <div className="learning-mode-card__icon">🏫</div>
+                      <span className="learning-mode-badge learning-mode-badge--physical">
+                        No Online Payment Required
+                      </span>
+                    </div>
+
                     <h3 className="learning-mode-card__title">Hands-on Physical Classes</h3>
                     <p className="learning-mode-card__desc">
-                      Ideal for students seeking immersive, in-person campus laboratory training.
+                      Want to learn physically? Contact our admin to find the nearest Dave Techs branch, discuss your preferred course, and get guidance on how to enroll.
                     </p>
                     <ul className="learning-mode-card__perks">
-                      <li>✓ Dedicated high-speed Wi-Fi and workstation lab access</li>
-                      <li>✓ Face-to-face mentorship and pair programming</li>
-                      <li>✓ In-person capstone defenses and tech meetups</li>
-                      <li>✓ Physical campus facilities and study lounges</li>
+                      <li>✓ Find the nearest Dave Techs branch to you.</li>
+                      <li>✓ Speak directly with our admin about physical classes.</li>
+                      <li>✓ Get information about available courses, schedules, and enrollment.</li>
+                      <li>✓ Arrange a visit to your preferred branch.</li>
+                      <li>✓ Get guidance on the next steps for joining Dave Techs.</li>
                     </ul>
+
+                    <div className="learning-mode-note learning-mode-note--physical">
+                      ℹ️ <strong>In-Person Enrollment:</strong> Students selecting physical classes are not required to pay online. Do not pay online — your admission and enrollment arrangements are handled directly with our academy admin.
+                    </div>
+
+                    {/* Direct Contact Buttons */}
+                    <div className="physical-contact-actions" onClick={(e) => e.stopPropagation()}>
+                      {/* WhatsApp Button */}
+                      <a
+                        href={adminWhatsAppUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="apply-contact-btn apply-contact-btn--whatsapp"
+                        title="Contact Dave Techs Admin on WhatsApp"
+                      >
+                        <span>💬</span>
+                        <span>Contact Admin on WhatsApp</span>
+                      </a>
+
+                      {/* Call Admin Group */}
+                      <div className="apply-call-container">
+                        <a
+                          href="tel:+2349070925508"
+                          className="apply-contact-btn apply-contact-btn--call"
+                          title="Call Dave Techs Admin directly at 09070925508"
+                        >
+                          <span>📞</span>
+                          <span>Call Admin: 09070925508</span>
+                        </a>
+
+                        <div className="apply-contact-alt-box">
+                          <span>Alternative Phone:</span>
+                          <a
+                            href="tel:+2348110913672"
+                            className="apply-contact-alt-link"
+                            title="Call alternative phone number 08110913672"
+                          >
+                            08110913672
+                          </a>
+                        </div>
+                      </div>
+
+                      {/* Nearest Branch Assistance Section */}
+                      <div className="branch-finder-box">
+                        <div className="branch-finder-title">
+                          <span>📍</span>
+                          <span>Find a Branch Near You</span>
+                        </div>
+                        <p className="branch-finder-subtext">
+                          Tell us your location, and our admin will help you identify the nearest available Dave Techs branch.
+                        </p>
+
+                        <div className="branch-finder-row">
+                          <input
+                            id="branchLocationInput"
+                            type="text"
+                            className={`form-input branch-finder-input ${physicalLocationError ? "form-input--error" : ""}`}
+                            placeholder="Enter your city or area (e.g., Ikeja, Lagos)"
+                            value={physicalLocationInput}
+                            onChange={(e) => {
+                              setPhysicalLocationInput(e.target.value);
+                              if (physicalLocationError) setPhysicalLocationError(null);
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                handleFindNearestBranch();
+                              }
+                            }}
+                          />
+                          <Button
+                            type="button"
+                            variant="primary"
+                            size="sm"
+                            className="branch-finder-btn"
+                            onClick={handleFindNearestBranch}
+                          >
+                            Find Nearest Branch
+                          </Button>
+                        </div>
+
+                        {physicalLocationError && (
+                          <span className="form-error" role="alert">
+                            ⚠️ {physicalLocationError}
+                          </span>
+                        )}
+
+                        {branchMatchNote && (
+                          <div className="branch-finder-match-note">
+                            <span>✅</span>
+                            <span>{branchMatchNote}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -866,9 +1145,21 @@ export const Apply: React.FC = () => {
                 <div className="apply-card__step-header">
                   <h2 className="apply-card__step-title">Step 6: Review & Final Confirmation</h2>
                   <p className="apply-card__step-desc">
-                    Please review your application summary details carefully before proceeding to payment.
+                    {learningMode === "online"
+                      ? "Please review your application summary details carefully before proceeding to payment."
+                      : "Please review your physical class registration details. No online payment is required."}
                   </p>
                 </div>
+
+                {learningMode === "physical" ? (
+                  <div className="learning-mode-note learning-mode-note--physical" style={{ marginBottom: "var(--sp-4)" }}>
+                    ℹ️ <strong>No Online Payment Required:</strong> For Hands-on Physical Classes, your registration details will be saved and our academy admin will assist you directly with branch confirmation, timetable, and on-site enrollment.
+                  </div>
+                ) : (
+                  <div className="learning-mode-note learning-mode-note--online" style={{ marginBottom: "var(--sp-4)" }}>
+                    💳 <strong>Payment Required:</strong> Completing your application will prompt tuition payment via Paystack to finalize and confirm your online training admission.
+                  </div>
+                )}
 
                 <div className="review-summary-box">
                   <div className="review-row">
@@ -898,7 +1189,9 @@ export const Apply: React.FC = () => {
                   <div className="review-row">
                     <span className="review-row__label">Learning Mode:</span>
                     <span className="review-row__val">
-                      {learningMode === "online" ? "🌐 Online Live Training" : "🏫 Hands-on Physical Class"}
+                      {learningMode === "online"
+                        ? "🌐 Online Live Training (Payment Required)"
+                        : "🏫 Hands-on Physical Classes (No Online Payment Required)"}
                     </span>
                   </div>
 
@@ -915,7 +1208,7 @@ export const Apply: React.FC = () => {
                   </div>
 
                   <div className="review-total-row">
-                    <span>Total Tuition Fee:</span>
+                    <span>{learningMode === "online" ? "Total Tuition Fee:" : "Tuition Fee (Pay On-Site):"}</span>
                     <span className="text-gold">{formatPrice(selectedCourse.price)}</span>
                   </div>
                 </div>
@@ -934,7 +1227,9 @@ export const Apply: React.FC = () => {
                     />
                     <span className="checkbox-custom" />
                     <span>
-                      I verify that the above information is accurate and agree to Dave Techs Academy's enrollment policies.
+                      {learningMode === "online"
+                        ? "I verify that the above information is accurate and agree to Dave Techs Academy's online enrollment policies."
+                        : "I verify that the above information is accurate and agree to complete my physical class enrollment with academy admin."}
                     </span>
                   </label>
                   {errors.terms && <span className="form-error">{errors.terms}</span>}
@@ -967,7 +1262,9 @@ export const Apply: React.FC = () => {
                   onClick={handleSubmitApplication}
                   isLoading={isSubmitting}
                 >
-                  Submit Application →
+                  {learningMode === "online"
+                    ? "Submit & Pay with Paystack →"
+                    : "Complete Physical Registration →"}
                 </Button>
               )}
             </div>
